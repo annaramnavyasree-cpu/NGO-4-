@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - Hope Foundation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-hero {
+        background: linear-gradient(135deg, rgba(0, 91, 187, 0.9), rgba(0, 45, 114, 0.8)), 
+                    url('{{ url_for("static", filename="images/about-hero.jpg") }}');
+        background-size: cover;
+        background-position: center;
+        padding: 100px 0;
+    }
+    
+    .team-member {
+        text-align: center;
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .team-member:hover {
+        transform: translateY(-10px);
+    }
+    
+    .team-member img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #005BBB;
+        margin-bottom: 15px;
+    }
+    
+    .value-card {
+        padding: 30px;
+        border-radius: 15px;
+        background: white;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .value-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .value-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero text-white text-center">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-3">About Us</h1>
+        <p class="lead">Learn about our journey and mission to make a difference</p>
+    </div>
+</section>
+
+<!-- About Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <img src="{{ url_for('static', filename='images/about-image.jpg') }}" alt="About Us" class="img-fluid rounded-3 shadow">
+            </div>
+            <div class="col-lg-6">
+                <h6 class="text-primary text-uppercase fw-bold">Who We Are</h6>
+                <h2 class="fw-bold mb-4">Hope Foundation</h2>
+                <p class="lead mb-4">Established in 2010, Hope Foundation is a non-profit organization dedicated to creating sustainable positive change in underserved communities.</p>
+                <p>Our journey began with a simple belief: every individual deserves access to quality education, healthcare, and a healthy environment. Over the years, we have expanded our reach to touch lives across multiple domains including education, healthcare, environment, and social welfare.</p>
+                <p>With the support of our donors, volunteers, and partners, we have impacted over 10,000 lives and continue to work towards our vision of a world where everyone has the opportunity to thrive.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Vision -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="p-5 bg-white rounded-3 shadow-sm h-100">
+                    <div class="mb-4">
+                        <i class="fas fa-bullseye fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Our Mission</h3>
+                    <p>To create sustainable positive change in underserved communities through innovative programs in education, healthcare, environmental conservation, and social welfare, empowering individuals to build better futures for themselves and their communities.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-5 bg-white rounded-3 shadow-sm h-100">
+                    <div class="mb-4">
+                        <i class="fas fa-eye fa-3x text-success"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Our Vision</h3>
+                    <p>To build a world where every individual has equal access to quality education, healthcare, and a healthy environment, fostering communities where people can achieve their full potential and live with dignity.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Values -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-primary text-uppercase fw-bold">What Drives Us</h6>
+            <h2 class="fw-bold">Our Core Values</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card">
+                    <div class="value-icon bg-primary text-white">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4>Integrity</h4>
+                    <p class="mb-0">We maintain the highest ethical standards in all our operations and relationships.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card">
+                    <div class="value-icon bg-success text-white">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h4>Compassion</h4>
+                    <p class="mb-0">We approach every interaction with empathy and genuine care for others.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card">
+                    <div class="value-icon bg-warning text-white">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h4>Transparency</h4>
+                    <p class="mb-0">We are open and honest about our work, finances, and impact.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card">
+                    <div class="value-icon bg-info text-white">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h4>Innovation</h4>
+                    <p class="mb-0">We continuously seek new solutions to address evolving challenges.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-primary text-uppercase fw-bold">Meet Our Team</h6>
+            <h2 class="fw-bold">Leadership</h2>
+        </div>
+        <div class="row g-4 justify-content-center">
+            {% for member in team %}
+            <div class="col-md-6 col-lg-3">
+                <div class="team-member bg-white rounded-3 p-4 shadow-sm">
+                    <img src="{{ member.photo or url_for('static', filename='images/team/default.jpg') }}" alt="{{ member.name }}">
+                    <h5 class="mb-1">{{ member.name }}</h5>
+                    <p class="text-primary mb-2">{{ member.position }}</p>
+                    <p class="small text-muted mb-0">{{ member.bio }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3">
+                <h2 class="display-4 fw-bold">15+</h2>
+                <p class="lead">Years of Service</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h2 class="display-4 fw-bold">10K+</h2>
+                <p class="lead">Lives Impacted</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h2 class="display-4 fw-bold">50+</h2>
+                <p class="lead">Programs</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h2 class="display-4 fw-bold">500+</h2>
+                <p class="lead">Volunteers</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-3">Join Our Mission</h2>
+        <p class="lead mb-4">Your support can help us create more positive change.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('user.donate') }}" class="btn btn-primary btn-lg">Donate Now</a>
+            <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary btn-lg">Contact Us</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
