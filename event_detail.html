@@ -1,170 +1,153 @@
-{% extends "admin/base.html" %}
+{% extends "base.html" %}
 
-{% block title %}Event Details - Hope Foundation Admin{% endblock %}
+{% block title %}{{ event.title }} - NGO{% endblock %}
 
-{% block admin_content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Event Details</h4>
-    <div>
-        <a href="{{ url_for('admin.events') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-1"></i> Back to Events
-        </a>
-        <a href="{{ url_for('admin.event_edit', event_id=event.id) }}" class="btn btn-primary">
-            <i class="fas fa-edit me-1"></i> Edit
-        </a>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-8">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white">
-                <h5 class="mb-0">{{ event.title }}</h5>
-            </div>
-            <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <p class="text-muted mb-1">Event Date</p>
-                        <p class="mb-0">{{ event.event_date.strftime('%B %d, %Y %I:%M %p') }}</p>
-                    </div>
-                    {% if event.end_date %}
-                    <div class="col-md-6">
-                        <p class="text-muted mb-1">End Date</p>
-                        <p class="mb-0">{{ event.end_date.strftime('%B %d, %Y %I:%M %p') }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <p class="text-muted mb-1">Location</p>
-                        <p class="mb-0">{{ event.location }}</p>
-                    </div>
-                    {% if event.venue %}
-                    <div class="col-md-6">
-                        <p class="text-muted mb-1">Venue</p>
-                        <p class="mb-0">{{ event.venue }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-                
-                {% if event.organizer %}
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <p class="text-muted mb-1">Organizer</p>
-                        <p class="mb-0">{{ event.organizer }}</p>
-                    </div>
-                    {% if event.category %}
-                    <div class="col-md-6">
-                        <p class="text-muted mb-1">Category</p>
-                        <p class="mb-0">{{ event.category }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-                {% endif %}
-                
-                {% if event.contact_email or event.contact_phone %}
-                <div class="row mb-3">
-                    {% if event.contact_email %}
-                    <div class="col-md-6">
-                        <p class="text-muted mb-1">Contact Email</p>
-                        <p class="mb-0"><a href="mailto:{{ event.contact_email }}">{{ event.contact_email }}</a></p>
-                    </div>
-                    {% endif %}
-                    {% if event.contact_phone %}
-                    <div class="col-md-6">
-                        <p class="text-muted mb-1">Contact Phone</p>
-                        <p class="mb-0">{{ event.contact_phone }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-                {% endif %}
-                
-                <div class="mb-3">
-                    <p class="text-muted mb-1">Description</p>
-                    <p class="mb-0">{{ event.description }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.events') }}">Events</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ event.title }}</li>
+        </ol>
+    </nav>
     
-    <div class="col-md-4">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white">
-                <h5 class="mb-0">Event Status</h5>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <p class="text-muted mb-1">Published</p>
-                    <p class="mb-0">
-                        {% if event.is_published %}
-                        <span class="badge bg-success">Published</span>
-                        {% else %}
-                        <span class="badge bg-secondary">Draft</span>
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="mb-3">
-                    <p class="text-muted mb-1">Featured</p>
-                    <p class="mb-0">
-                        {% if event.is_featured %}
-                        <span class="badge bg-warning">Featured</span>
-                        {% else %}
-                        <span class="badge bg-light text-dark">Not Featured</span>
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="mb-3">
-                    <p class="text-muted mb-1">Registration Required</p>
-                    <p class="mb-0">
-                        {% if event.registration_required %}
-                        <span class="badge bg-info">Required</span>
-                        {% else %}
-                        <span class="badge bg-light text-dark">Not Required</span>
-                        {% endif %}
-                    </p>
-                </div>
-                {% if event.max_participants %}
-                <div class="mb-3">
-                    <p class="text-muted mb-1">Max Participants</p>
-                    <p class="mb-0">{{ event.max_participants }}</p>
+    <div class="row">
+        <div class="col-lg-8">
+            <article class="event-detail">
+                {% if event.image_url %}
+                <img src="{{ url_for('static', filename='uploads/' + event.image_url) }}" alt="{{ event.title }}" class="img-fluid rounded mb-4" style="width: 100%; max-height: 400px; object-fit: cover;">
+                {% else %}
+                <div class="bg-light rounded d-flex align-items-center justify-content-center mb-4" style="height: 300px;">
+                    <i class="fas fa-calendar-event fa-4x text-muted"></i>
                 </div>
                 {% endif %}
-            </div>
+                
+                <h1 class="mb-3">{{ event.title }}</h1>
+                
+                <div class="event-meta mb-4">
+                    <span class="me-3"><i class="fas fa-calendar me-2"></i>{{ event.event_date.strftime('%B %d, %Y') }}</span>
+                    {% if event.location %}
+                    <span class="me-3"><i class="fas fa-map-marker-alt me-2"></i>{{ event.location }}</span>
+                    {% endif %}
+                    {% if event.start_time %}
+                    <span><i class="fas fa-clock me-2"></i>{{ event.start_time }}{% if event.end_time %} - {{ event.end_time }}{% endif %}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="event-content">
+                    {{ event.description | safe }}
+                </div>
+                
+                {% if event.registration_deadline %}
+                <div class="alert alert-info mt-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Registration Deadline:</strong> {{ event.registration_deadline.strftime('%B %d, %Y') }}
+                </div>
+                {% endif %}
+                
+                {% if event.max_participants %}
+                <div class="alert alert-warning mt-4">
+                    <i class="fas fa-users me-2"></i>
+                    <strong>Max Participants:</strong> {{ event.max_participants }}
+                    {% if event.registered_count is defined and event.registered_count is not none %}
+                    ({{ event.registered_count }} registered)
+                    {% endif %}
+                </div>
+                {% endif %}
+            </article>
         </div>
         
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white">
-                <h5 class="mb-0">Registrations</h5>
-            </div>
-            <div class="card-body">
-                <div class="text-center">
-                    <h2 class="mb-0">{{ event.participants|length }}</h2>
-                    <p class="text-muted mb-0">Registered Participants</p>
-                </div>
-                {% if event.max_participants %}
-                <div class="mt-3">
-                    <div class="progress" style="height: 20px;">
-                        {% set percent = (event.participants|length / event.max_participants * 100)|round|int %}
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ percent }}%">
-                            {{ percent }}%
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Event Details</h5>
+                    
+                    <ul class="list-unstyled">
+                        {% if event.category %}
+                        <li class="mb-2">
+                            <strong><i class="fas fa-tag me-2 text-primary"></i>Category:</strong>
+                            {{ event.category }}
+                        </li>
+                        {% endif %}
+                        
+                        {% if event.organizer %}
+                        <li class="mb-2">
+                            <strong><i class="fas fa-user me-2 text-primary"></i>Organizer:</strong>
+                            {{ event.organizer }}
+                        </li>
+                        {% endif %}
+                        
+                        {% if event.contact_email %}
+                        <li class="mb-2">
+                            <strong><i class="fas fa-envelope me-2 text-primary"></i>Contact:</strong>
+                            <a href="mailto:{{ event.contact_email }}">{{ event.contact_email }}</a>
+                        </li>
+                        {% endif %}
+                        
+                        {% if event.venue %}
+                        <li class="mb-2">
+                            <strong><i class="fas fa-building me-2 text-primary"></i>Venue:</strong>
+                            {{ event.venue }}
+                        </li>
+                        {% endif %}
+                    </ul>
+                    
+                    {% if current_user.is_authenticated %}
+                        {% if is_registered %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>You're registered!</strong>
+                            <p class="mb-0 mt-2">We look forward to seeing you at this event.</p>
                         </div>
+                        {% elif event.is_full %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-times-circle me-2"></i>
+                            <strong>Event Full</strong>
+                            <p class="mb-0 mt-2">Registration is closed for this event.</p>
+                        </div>
+                        {% elif event.registration_deadline and event.registration_deadline < now %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Registration Closed</strong>
+                            <p class="mb-0 mt-2">The registration deadline has passed.</p>
+                        </div>
+                        {% else %}
+                        <form method="POST" action="{{ url_for('user.event_register', slug=event.slug) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-user-plus me-2"></i>Register Now
+                            </button>
+                        </form>
+                        {% endif %}
+                    {% else %}
+                    <a href="{{ url_for('auth.login', next=request.url) }}" class="btn btn-primary w-100">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login to Register
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Share This Event</h5>
+                    <div class="d-flex gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.url }}&text={{ event.title }}" target="_blank" class="btn btn-outline-info btn-sm">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="mailto:?subject={{ event.title }}&body=Check out this event: {{ request.url }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-envelope"></i>
+                        </a>
                     </div>
                 </div>
-                {% endif %}
             </div>
         </div>
-        
-        {% if event.image_url %}
-        <div class="card shadow-sm">
-            <div class="card-header bg-white">
-                <h5 class="mb-0">Event Image</h5>
-            </div>
-            <div class="card-body">
-                <img src="{{ url_for('static', filename='uploads/' + event.image_url) }}" alt="{{ event.title }}" class="img-fluid rounded">
-            </div>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
