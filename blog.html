@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - NGO{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold">Our Blog</h1>
+                <p class="lead">Stay updated with the latest news, stories, and impact from our work</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Content -->
+<section class="py-5">
+    <div class="container">
+        <!-- Category Filter -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="btn-group flex-wrap" role="group">
+                    <a href="{{ url_for('main.blog') }}" class="btn btn{{ '-outline' if not current_category }}-primary">All</a>
+                    {% for cat in categories %}
+                    <a href="{{ url_for('main.blog', category=cat) }}" class="btn btn{{ '-outline' if current_category != cat }}-primary text-capitalize">
+                        {{ cat }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {% if posts.items %}
+        <!-- Blog Posts Grid -->
+        <div class="row">
+            {% for post in posts.items %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm blog-card">
+                    {% if post.media_url %}
+                    <img src="{{ url_for('static', filename='uploads/' + post.media_url) }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-image fa-3x"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary text-capitalize">{{ post.category }}</span>
+                            <small class="text-muted">
+                                <i class="far fa-calendar me-1"></i>
+                                {{ post.created_at.strftime('%B %d, %Y') }}
+                            </small>
+                        </div>
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text text-muted">
+                            {{ post.description[:120] }}{% if post.description|length > 120 %}...{% endif %}
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="far fa-eye me-1"></i>{{ post.views }} views
+                            </small>
+                            <a href="{{ url_for('main.blog_detail', slug=post.slug) }}" class="btn btn-sm btn-outline-primary">
+                                Read More <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if posts.pages > 1 %}
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="Blog pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if posts.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('main.blog', page=posts.prev_num, category=current_category) }}">Previous</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Previous</span>
+                        </li>
+                        {% endif %}
+
+                        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                            {% if page_num %}
+                                {% if page_num == posts.page %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                                {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('main.blog', page=page_num, category=current_category) }}">{{ page_num }}</a>
+                                </li>
+                                {% endif %}
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if posts.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('main.blog', page=posts.next_num, category=current_category) }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Next</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-blog fa-4x text-muted mb-3"></i>
+            <h4>No Blog Posts Yet</h4>
+            <p class="text-muted">Check back soon for updates!</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Subscribe Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto text-center">
+                <h3>Subscribe to Our Newsletter</h3>
+                <p class="text-muted">Get the latest updates delivered to your inbox</p>
+                <form class="row g-3 justify-content-center">
+                    <div class="col-auto">
+                        <input type="email" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
