@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Our Programs - {{ contact.name }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header bg-primary text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="display-4">Our Programs</h1>
+                <p class="lead">Making a difference through dedicated initiatives</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Programs Section -->
+<section class="programs-section py-5">
+    <div class="container">
+        <!-- Category Tabs -->
+        <ul class="nav nav-pills mb-4 justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link {% if not category %}active{% endif %}" href="{{ url_for('main.programs') }}">All Programs</a>
+            </li>
+            {% for cat in categories %}
+            <li class="nav-item">
+                <a class="nav-link {% if category == cat %}active{% endif %}" href="{{ url_for('main.programs', category=cat) }}">
+                    {{ cat.title() }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Programs Grid -->
+        <div class="row">
+            {% if contents %}
+                {% for content in contents %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card program-card h-100 shadow-sm">
+                        {% if content.media_url %}
+                        <img src="{{ url_for('static', filename='uploads/' + content.media_url) }}" class="card-img-top" alt="{{ content.title }}">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-image fa-3x text-white"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <span class="badge bg-info mb-2">{{ content.category.title() }}</span>
+                            <h5 class="card-title">{{ content.title }}</h5>
+                            <p class="card-text">{{ content.description[:150] }}{% if content.description|length > 150 %}...{% endif %}</p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                            <a href="#" class="btn btn-outline-primary btn-sm">Learn More</a>
+                            <a href="{{ url_for('user.donate') }}" class="btn btn-success btn-sm float-end">Support This Program</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                    <h3>No programs found</h3>
+                    <p class="text-muted">Check back soon for updates on our initiatives.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section bg-light py-5">
+    <div class="container text-center">
+        <h2>Support Our Mission</h2>
+        <p class="lead mb-4">Your contribution can make a real difference in the lives of those we serve.</p>
+        <div class="d-flex gap-3 justify-content-center">
+            <a href="{{ url_for('user.donate') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-heart me-2"></i>Donate Now
+            </a>
+            <a href="{{ url_for('main.volunteer') }}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-hands-helping me-2"></i>Become a Volunteer
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
