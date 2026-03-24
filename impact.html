@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}Our Impact - NGO{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-warning text-dark py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold">Our Impact</h1>
+                <p class="lead">Making a difference, one life at a time</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Impact Stats -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-6 col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                    <h2 class="fw-bold">50,000+</h2>
+                    <p class="text-muted">People Helped</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-graduation-cap fa-3x text-success mb-3"></i>
+                    <h2 class="fw-bold">10,000+</h2>
+                    <p class="text-muted">Students Educated</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-hospital fa-3x text-danger mb-3"></i>
+                    <h2 class="fw-bold">5,000+</h2>
+                    <p class="text-muted">Patients Treated</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-tree fa-3x text-info mb-3"></i>
+                    <h2 class="fw-bold">1,000+</h2>
+                    <p class="text-muted">Trees Planted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Stories -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="fw-bold">Success Stories</h2>
+                <p class="text-muted">Real stories of change and hope</p>
+            </div>
+        </div>
+        
+        {% if success_stories %}
+        <div class="row">
+            {% for story in success_stories[:6] %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if story.image_url %}
+                    <img src="{{ url_for('static', filename='uploads/' + story.image_url) }}" class="card-img-top" alt="{{ story.title }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-star fa-3x"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ story.title }}</h5>
+                        <p class="card-text text-muted">
+                            {{ story.description[:150] }}{% if story.description|length > 150 %}...{% endif %}
+                        </p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-child fa-4x text-primary mb-3"></i>
+                        <h5>Education for Ramesh</h5>
+                        <p class="text-muted">A young boy from a remote village now attends school and dreams of becoming a doctor.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-heart fa-4x text-danger mb-3"></i>
+                        <h5>Healthcare for Sunita</h5>
+                        <p class="text-muted">A mother received life-saving surgery through our healthcare program.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-seedling fa-4x text-success mb-3"></i>
+                        <h5>Green Village Initiative</h5>
+                        <p class="text-muted">A entire village transformed through sustainable farming practices.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.blog', category='success') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-right me-2"></i>View All Stories
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Impact Areas -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="fw-bold">Areas of Impact</h2>
+                <p class="text-muted">Where we make the biggest difference</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-graduation-cap fa-2x"></i>
+                        </div>
+                        <h5>Education</h5>
+                        <p class="text-muted">Providing quality education to underprivileged children through schools and scholarship programs.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success me-2"></i>50 schools built</li>
+                            <li><i class="fas fa-check text-success me-2"></i>10,000+ students</li>
+                            <li><i class="fas fa-check text-success me-2"></i>5,000 scholarships</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-heartbeat fa-2x"></i>
+                        </div>
+                        <h5>Healthcare</h5>
+                        <p class="text-muted">Delivering essential medical services and health awareness to remote communities.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success me-2"></i>20 health camps</li>
+                            <li><i class="fas fa-check text-success me-2"></i>5,000+ treated</li>
+                            <li><i class="fas fa-check text-success me-2"></i>10 mobile clinics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-leaf fa-2x"></i>
+                        </div>
+                        <h5>Environment</h5>
+                        <p class="text-muted">Promoting sustainable practices and environmental conservation.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success me-2"></i>10,000 trees</li>
+                            <li><i class="fas fa-check text-success me-2"></i>50 villages</li>
+                            <li><i class="fas fa-check text-success me-2"></i>5 solar projects</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="bg-warning text-dark rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-hands-helping fa-2x"></i>
+                        </div>
+                        <h5>Social Welfare</h5>
+                        <p class="text-muted">Empowering communities through skill development and support programs.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success me-2"></i>2,000 trained</li>
+                            <li><i class="fas fa-check text-success me-2"></i>100 women groups</li>
+                            <li><i class="fas fa-check text-success me-2"></i>50 self-help groups</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Transparency Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="fw-bold">Our Commitment to Transparency</h2>
+                <p class="text-muted mb-4">We believe in complete transparency and accountability. Every donation is tracked and reported.</p>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-chart-pie fa-2x text-primary me-3"></i>
+                        <div>
+                            <h5 class="mb-0">Financial Reports</h5>
+                            <small class="text-muted">Detailed breakdown of fund allocation</small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-file-alt fa-2x text-success me-3"></i>
+                        <div>
+                            <h5 class="mb-0">Annual Reports</h5>
+                            <small class="text-muted">Comprehensive yearly impact analysis</small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-certificate fa-2x text-warning me-3"></i>
+                        <div>
+                            <h5 class="mb-0">Certifications</h5>
+                            <small class="text-muted">Verified by recognized authorities</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-4 mt-lg-0">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=500&auto=format&fit=crop&q=60" alt="Transparency" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Get Involved -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="fw-bold mb-4">Be Part of Our Impact</h2>
+                <p class="text-muted mb-4">Join us in making a difference</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ url_for('main.donate') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-heart me-2"></i>Donate Now
+                    </a>
+                    <a href="{{ url_for('main.volunteer') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-hands me-2"></i>Volunteer
+                    </a>
+                    <a href="{{ url_for('main.programs') }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-project-diagram me-2"></i>Our Programs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
