@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login - Hope Foundation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-login-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    }
+    .admin-login-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        max-width: 450px;
+        width: 100%;
+    }
+    .admin-login-header {
+        background: linear-gradient(135deg, #005BBB 0%, #003d7a 100%);
+        padding: 2rem;
+        text-align: center;
+    }
+    .admin-login-body {
+        padding: 2rem;
+    }
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 12px 15px;
+    }
+    .form-control:focus {
+        border-color: #005BBB;
+        box-shadow: 0 0 0 3px rgba(0, 91, 187, 0.1);
+    }
+    .btn-admin {
+        background: linear-gradient(135deg, #005BBB 0%, #003d7a 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        font-weight: 600;
+    }
+    .btn-admin:hover {
+        background: linear-gradient(135deg, #003d7a 0%, #002a50 100%);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-login-page">
+    <div class="admin-login-card">
+        <div class="admin-login-header">
+            <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="Hope Foundation" height="50" class="mb-2">
+            <h4 class="text-white mb-0">Admin Panel</h4>
+            <p class="text-white-50 small mb-0">Hope Foundation Management</p>
+        </div>
+        <div class="admin-login-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="{{ url_for('admin.login') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="fas fa-envelope"></i></span>
+                        <input type="email" name="email" class="form-control" placeholder="admin@ngo.org" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="fas fa-lock"></i></span>
+                        <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-admin btn-primary w-100 text-white">
+                    <i class="fas fa-sign-in-alt me-2"></i> Login
+                </button>
+            </form>
+            <div class="text-center mt-4">
+                <a href="{{ url_for('main.index') }}" class="text-decoration-none">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Website
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
