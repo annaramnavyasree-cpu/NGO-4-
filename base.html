@@ -3,196 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{% block meta_description %}NGO dedicated to making a positive impact in Education, Healthcare, Environment, and Social Welfare{% endblock %}">
-    <title>{% block title %}Hope Foundation - Making a Difference{% endblock %}</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    
-    <!-- Bootstrap 5 CSS -->
+    <title>{% block title %}Hope Foundation Admin{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6b7280;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --dark-color: #1f2937;
+            --light-color: #f3f4f6;
+        }
+        
+        body {
+            background-color: #f9fafb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #4f46e5 0%, #3730a3 100%);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-brand {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            width: 24px;
+            margin-right: 12px;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-dropdown {
+            position: relative;
+        }
+        
+        .user-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        
+        .user-dropdown-toggle:hover {
+            background: #f3f4f6;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .stat-card {
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+        
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .bg-gradient-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+        
+        .bg-gradient-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        .table thead th {
+            border-bottom: 2px solid #e5e7eb;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+        
+        .badge {
+            padding: 0.4em 0.8em;
+            font-weight: 500;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .btn {
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            padding: 0.6rem 1rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.25rem 1.5rem;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+        
+        .pagination .page-link {
+            border-radius: 8px;
+            margin: 0 4px;
+            color: #374151;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6b7280;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background: transparent;
+        }
+        
+        .list-group-item {
+            border: none;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+        
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                z-index: 1000;
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+        }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Top Bar -->
-    {% if not hide_top_bar|default(false) %}
-    <div class="top-bar">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <span class="me-3"><i class="fas fa-phone-alt me-2"></i>{{ contact.phone|default('+1 234 567 8900') }}</span>
-                    <span><i class="fas fa-envelope me-2"></i>{{ contact.email|default('info@hopefoundation.org') }}</span>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-0" id="sidebar">
+                <div class="sidebar-brand">
+                    <i class="fas fa-heart me-2"></i>
+                    Hope Foundation
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="https://facebook.com" target="_blank" class="me-2"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://twitter.com" target="_blank" class="me-2"><i class="fab fa-twitter"></i></a>
-                    <a href="https://instagram.com" target="_blank" class="me-2"><i class="fab fa-instagram"></i></a>
-                    <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' else '' }}">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.users') }}" class="{{ 'active' if 'users' in request.endpoint else '' }}">
+                            <i class="fas fa-users"></i>
+                            Users
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.donations') }}" class="{{ 'active' if 'donation' in request.endpoint else '' }}">
+                            <i class="fas fa-hand-holding-heart"></i>
+                            Donations
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.volunteers') }}" class="{{ 'active' if 'volunteer' in request.endpoint else '' }}">
+                            <i class="fas fa-hands-helping"></i>
+                            Volunteers
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.events') }}" class="{{ 'active' if 'event' in request.endpoint else '' }}">
+                            <i class="fas fa-calendar-alt"></i>
+                            Events
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.content') }}" class="{{ 'active' if 'content' in request.endpoint else '' }}">
+                            <i class="fas fa-file-alt"></i>
+                            Content
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.contacts') }}" class="{{ 'active' if request.endpoint == 'admin.contacts' else '' }}">
+                            <i class="fas fa-envelope"></i>
+                            Messages
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.analytics') }}" class="{{ 'active' if request.endpoint == 'admin.analytics' else '' }}">
+                            <i class="fas fa-chart-line"></i>
+                            Analytics
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.settings') }}" class="{{ 'active' if request.endpoint == 'admin.settings' else '' }}">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-0">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <button class="btn d-md-none" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="user-dropdown">
+                        <div class="user-dropdown-toggle" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                {{ current_user.full_name[0]|upper }}
+                            </div>
+                            <div>
+                                <strong>{{ current_user.full_name }}</strong>
+                                <small class="d-block text-muted">Administrator</small>
+                            </div>
+                            <i class="fas fa-chevron-down ms-2"></i>
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('admin.settings') }}"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Page Content -->
+                <div class="p-4">
+                    {% block admin_content %}{% endblock %}
                 </div>
             </div>
         </div>
     </div>
-    {% endif %}
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main.index') }}">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Hope Foundation" height="50">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}" href="{{ url_for('main.index') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.about' %}active{% endif %}" href="{{ url_for('main.about') }}">About Us</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="programsDropdown" role="button" data-bs-toggle="dropdown">
-                            Programs
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('main.programs', category='education') }}">Education</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.programs', category='health') }}">Healthcare</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.programs', category='environment') }}">Environment</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.programs', category='social') }}">Social Welfare</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.blog' %}active{% endif %}" href="{{ url_for('main.blog') }}">Blog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.events' %}active{% endif %}" href="{{ url_for('main.events') }}">Events</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.contact' %}active{% endif %}" href="{{ url_for('main.contact') }}">Contact</a>
-                    </li>
-                    <li class="nav-item ms-lg-3">
-                        <a href="{{ url_for('user.donate') }}" class="btn btn-primary btn-donate">
-                            <i class="fas fa-heart me-2"></i>Donate Now
-                        </a>
-                    </li>
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item dropdown ms-lg-2">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle me-1"></i> {{ current_user.full_name }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            {% if current_user.role == 'admin' %}
-                            <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
-                            {% else %}
-                            <li><a class="dropdown-item" href="{{ url_for('user.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>My Dashboard</a></li>
-                            {% endif %}
-                            <li><a class="dropdown-item" href="{{ url_for('user.profile') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('user.donations') }}"><i class="fas fa-donate me-2"></i>My Donations</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
-                        </ul>
-                    </li>
-                    {% else %}
-                    <li class="nav-item ms-lg-2">
-                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary">Login</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="container mt-3">
-                {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-
-    <!-- Main Content -->
-    {% block content %}{% endblock %}
-
-    <!-- Footer -->
-    <footer class="footer bg-dark text-white pt-5 pb-4">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
-                    <h5 class="footer-heading">About Us</h5>
-                    <p class="mb-4">Hope Foundation is dedicated to making a positive impact in the lives of communities through education, healthcare, environment, and social welfare programs.</p>
-                    <div class="footer-social">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <h5 class="footer-heading">Quick Links</h5>
-                    <ul class="footer-links">
-                        <li><a href="{{ url_for('main.about') }}">About Us</a></li>
-                        <li><a href="{{ url_for('main.mission') }}">Our Mission</a></li>
-                        <li><a href="{{ url_for('main.vision') }}">Our Vision</a></li>
-                        <li><a href="{{ url_for('main.impact') }}">Our Impact</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="footer-heading">Programs</h5>
-                    <ul class="footer-links">
-                        <li><a href="{{ url_for('main.programs', category='education') }}">Education</a></li>
-                        <li><a href="{{ url_for('main.programs', category='health') }}">Healthcare</a></li>
-                        <li><a href="{{ url_for('main.programs', category='environment') }}">Environment</a></li>
-                        <li><a href="{{ url_for('main.programs', category='social') }}">Social Welfare</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="footer-heading">Contact Info</h5>
-                    <ul class="footer-contact">
-                        <li><i class="fas fa-map-marker-alt me-2"></i>123 Hope Street, City, Country</li>
-                        <li><i class="fas fa-phone me-2"></i>+1 234 567 8900</li>
-                        <li><i class="fas fa-envelope me-2"></i>info@hopefoundation.org</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="my-4 border-secondary">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="mb-0">&copy; {{ current_year }} Hope Foundation. All rights reserved.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="#" class="me-3">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    
-    <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+        }
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
