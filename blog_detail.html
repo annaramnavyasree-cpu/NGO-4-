@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - NGO Blog{% endblock %}
+
+{% block content %}
+<!-- Blog Post Header -->
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" class="text-white">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('main.blog') }}" class="text-white">Blog</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">{{ post.title[:30] }}...</li>
+                    </ol>
+                </nav>
+                <h1 class="display-5 fw-bold mt-3">{{ post.title }}</h1>
+                <div class="d-flex flex-wrap gap-3 align-items-center">
+                    <span><i class="far fa-calendar me-2"></i>{{ post.created_at.strftime('%B %d, %Y') }}</span>
+                    <span><i class="far fa-eye me-2"></i>{{ post.views }} views</span>
+                    <span class="badge bg-light text-dark text-capitalize">{{ post.category }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Post Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Featured Image -->
+                {% if post.media_url %}
+                <img src="{{ url_for('static', filename='uploads/' + post.media_url) }}" alt="{{ post.title }}" class="img-fluid rounded shadow-sm mb-4" style="width: 100%; max-height: 400px; object-fit: cover;">
+                {% endif %}
+
+                <!-- Post Content -->
+                <div class="blog-content">
+                    {% if post.content_body %}
+                    {{ post.content_body|safe }}
+                    {% else %}
+                    <p class="text-muted">{{ post.description }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Share Section -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Share This Post</h5>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary btn-sm"><i class="fab fa-facebook-f"></i> Facebook</button>
+                            <button class="btn btn-info btn-sm text-white"><i class="fab fa-twitter"></i> Twitter</button>
+                            <button class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                            <button class="btn btn-secondary btn-sm"><i class="fas fa-link"></i> Copy Link</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Author Info -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 60px; height: 60px;">
+                                <i class="fas fa-user fa-2x"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">NGO Editorial Team</h5>
+                                <p class="text-muted mb-0">Sharing stories of impact and change</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments Section (placeholder) -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="far fa-comments me-2"></i>Comments</h5>
+                    </div>
+                    <div class="card-body text-center py-4">
+                        <p class="text-muted mb-0">Comments are disabled for this post.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <!-- Search -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Search</h5>
+                        <form action="{{ url_for('main.blog') }}" method="GET">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search blog..." name="search">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-folder me-2"></i>Categories</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="{{ url_for('main.blog', category='education') }}" class="badge bg-secondary text-decoration-none">Education</a>
+                            <a href="{{ url_for('main.blog', category='health') }}" class="badge bg-secondary text-decoration-none">Health</a>
+                            <a href="{{ url_for('main.blog', category='environment') }}" class="badge bg-secondary text-decoration-none">Environment</a>
+                            <a href="{{ url_for('main.blog', category='social') }}" class="badge bg-secondary text-decoration-none">Social</a>
+                            <a href="{{ url_for('main.blog', category='news') }}" class="badge bg-secondary text-decoration-none">News</a>
+                            <a href="{{ url_for('main.blog', category='blog') }}" class="badge bg-secondary text-decoration-none">Blog</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Posts -->
+                {% if related_posts %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Related Posts</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for related in related_posts %}
+                        <div class="mb-3">
+                            <a href="{{ url_for('main.blog_detail', slug=related.slug) }}" class="text-decoration-none">
+                                <h6 class="mb-1">{{ related.title[:40] }}...</h6>
+                            </a>
+                            <small class="text-muted">{{ related.created_at.strftime('%B %d, %Y') }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Newsletter -->
+                <div class="card mb-4 bg-primary text-white">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Subscribe</h5>
+                        <p class="small">Get latest updates in your inbox</p>
+                        <form>
+                            <input type="email" class="form-control mb-2" placeholder="Your email">
+                            <button type="submit" class="btn btn-light w-100">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Posts Section -->
+{% if related_posts %}
+<section class="bg-light py-5">
+    <div class="container">
+        <h3 class="mb-4">Related Posts</h3>
+        <div class="row">
+            {% for related in related_posts %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    {% if related.media_url %}
+                    <img src="{{ url_for('static', filename='uploads/' + related.media_url) }}" class="card-img-top" alt="{{ related.title }}" style="height: 150px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 150px;">
+                        <i class="fas fa-image fa-2x"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h6 class="card-title">{{ related.title[:50] }}...</h6>
+                        <a href="{{ url_for('main.blog_detail', slug=related.slug) }}" class="btn btn-sm btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
