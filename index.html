@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+
+{% block title %}Hope Foundation - Making a Difference Together{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, rgba(0, 91, 187, 0.9), rgba(0, 45, 114, 0.8)), 
+                    url('{{ url_for("static", filename="images/hero-bg.jpg") }}');
+        background-size: cover;
+        background-position: center;
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+    }
+    
+    .hero-content h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-content p {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+    
+    .stat-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .stat-card h3 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .program-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .program-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .program-card .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .program-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1rem;
+    }
+    
+    .impact-section {
+        background: linear-gradient(135deg, #005BBB 0%, #002D72 100%);
+    }
+    
+    .testimonial-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+        border-radius: 30px;
+        padding: 4rem;
+        margin: 4rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 hero-content">
+                <h1>Together We Can Make a <span class="text-warning">Difference</span></h1>
+                <p>Join us in our mission to create positive change in education, healthcare, environment, and social welfare. Every contribution matters.</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('user.donate') }}" class="btn btn-warning btn-lg px-4">
+                        <i class="fas fa-heart me-2"></i>Donate Now
+                    </a>
+                    <a href="{{ url_for('user.volunteer') }}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-hands-helping me-2"></i>Volunteer
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 mt-5 mt-lg-0">
+                <div class="row g-4">
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <h3 class="text-warning">10K+</h3>
+                            <p class="mb-0">Lives Impacted</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <h3 class="text-warning">50+</h3>
+                            <p class="mb-0">Projects</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <h3 class="text-warning">500+</h3>
+                            <p class="mb-0">Volunteers</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <h3 class="text-warning">25</h3>
+                            <p class="mb-0">Countries</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Vision Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center p-4 h-100">
+                    <div class="program-icon bg-primary text-white mb-3">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Our Mission</h3>
+                    <p>To create sustainable positive change in underserved communities through education, healthcare, and environmental initiatives.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4 h-100">
+                    <div class="program-icon bg-success text-white mb-3">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Our Vision</h3>
+                    <p>A world where every individual has access to quality education, healthcare, and a healthy environment.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4 h-100">
+                    <div class="program-icon bg-warning text-white mb-3">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Our Values</h3>
+                    <p>Integrity, compassion, transparency, and commitment to sustainable impact in all our endeavors.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Programs Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-primary text-uppercase fw-bold">What We Do</h6>
+            <h2 class="fw-bold">Our Programs</h2>
+            <p class="lead">Making a lasting impact across multiple domains</p>
+        </div>
+        <div class="row g-4">
+            {% for program in programs %}
+            <div class="col-md-6 col-lg-3">
+                <div class="program-card card h-100">
+                    <img src="{{ program.media_url and url_for('static', filename='uploads/' + program.media_url) or url_for('static', filename='images/programs/' + program.category + '.jpg') }}" 
+                         alt="{{ program.title }}" class="card-img-top">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ program.title }}</h5>
+                        <p class="card-text">{{ program.description[:100] }}...</p>
+                        <a href="{{ url_for('main.programs', category=program.category) }}" class="btn btn-outline-primary">
+                            Learn More <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Impact Stats Section -->
+<section class="py-5 impact-section text-white">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3">
+                <div class="impact-stat">
+                    <h2 class="display-4 fw-bold">15K+</h2>
+                    <p class="lead">Children Educated</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="impact-stat">
+                    <h2 class="display-4 fw-bold">8K+</h2>
+                    <p class="lead">Patients Treated</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="impact-stat">
+                    <h2 class="display-4 fw-bold">10K+</h2>
+                    <p class="lead">Trees Planted</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="impact-stat">
+                    <h2 class="display-4 fw-bold">$2M+</h2>
+                    <p class="lead">Funds Raised</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Stories Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-primary text-uppercase fw-bold">Inspiring Stories</h6>
+            <h2 class="fw-bold">Success Stories</h2>
+        </div>
+        <div class="row g-4">
+            {% for story in stories %}
+            <div class="col-md-6 col-lg-4">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{{ url_for('static', filename='images/avatars/default.jpg') }}" 
+                             alt="{{ story.title }}" class="rounded-circle me-3" width="60" height="60">
+                        <div>
+                            <h6 class="mb-0">{{ story.title }}</h6>
+                            <small class="text-muted">{{ story.category }}</small>
+                        </div>
+                    </div>
+                    <p class="mb-0">{{ story.description[:200] }}...</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Events Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h6 class="text-primary text-uppercase fw-bold">Get Involved</h6>
+                <h2 class="fw-bold">Upcoming Events</h2>
+            </div>
+            <a href="{{ url_for('main.events') }}" class="btn btn-primary">View All Events</a>
+        </div>
+        <div class="row g-4">
+            {% for event in events %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="event-date text-center me-3">
+                                <span class="d-block fw-bold text-primary">{{ event.event_date.strftime('%d') }}</span>
+                                <span class="small">{{ event.event_date.strftime('%b') }}</span>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">{{ event.title }}</h5>
+                                <small class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>{{ event.location }}</small>
+                            </div>
+                        </div>
+                        <p class="card-text">{{ event.description[:100] }}...</p>
+                        <a href="{{ url_for('main.event_detail', slug=event.slug) }}" class="btn btn-sm btn-outline-primary">
+                            Details <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="container">
+    <div class="cta-section text-white text-center">
+        <h2 class="fw-bold mb-3">Join Our Mission</h2>
+        <p class="lead mb-4">Your support can change lives. Whether through donations, volunteering, or spreading awareness.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('user.donate') }}" class="btn btn-light btn-lg px-5">
+                <i class="fas fa-donate me-2"></i>Donate
+            </a>
+            <a href="{{ url_for('user.volunteer') }}" class="btn btn-outline-light btn-lg px-5">
+                <i class="fas fa-hands-helping me-2"></i>Volunteer
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h2 class="fw-bold mb-3">Stay Updated</h2>
+                <p class="mb-4">Subscribe to our newsletter for the latest updates on our programs and impact.</p>
+                <form class="d-flex gap-2">
+                    <input type="email" class="form-control form-control-lg" placeholder="Enter your email">
+                    <button type="submit" class="btn btn-primary btn-lg px-4">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
