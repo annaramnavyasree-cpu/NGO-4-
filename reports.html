@@ -1,269 +1,205 @@
-{% extends "admin/base.html" %}
+{% extends "base.html" %}
 
-{% block title %}Reports - Hope Foundation Admin{% endblock %}
+{% block title %}Annual Reports - NGO{% endblock %}
 
-{% block admin_content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Reports & Analytics</h4>
-    <div class="btn-group">
-        <button class="btn btn-outline-primary" onclick="generateReport('donations')">
-            <i class="fas fa-dollar-sign me-1"></i> Donations
-        </button>
-        <button class="btn btn-outline-success" onclick="generateReport('volunteers')">
-            <i class="fas fa-users me-1"></i> Volunteers
-        </button>
-        <button class="btn btn-outline-info" onclick="generateReport('events')">
-            <i class="fas fa-calendar me-1"></i> Events
-        </button>
+{% block content %}
+<!-- Page Header -->
+<section class="bg-dark text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold">Annual Reports</h1>
+                <p class="lead">Transparency and accountability in everything we do</p>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-
-<!-- Summary Stats -->
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card border-primary">
-            <div class="card-body text-primary">
-                <h6 class="text-muted mb-2">Total Donations</h6>
-                <h3 class="mb-0">${{ total_donations }}</h3>
-            </div>
+<!-- Reports Section -->
+<section class="py-5">
+    <div class="container">
+        {% if reports %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            Click on any report below to view or download the full document.
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-success">
-            <div class="card-body text-success">
-                <h6 class="text-muted mb-2">Total Volunteers</h6>
-                <h3 class="mb-0">{{ total_volunteers }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-info">
-            <div class="card-body text-info">
-                <h6 class="text-muted mb-2">Total Events</h6>
-                <h3 class="mb-0">{{ total_events }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-warning">
-            <div class="card-body text-warning">
-                <h6 class="text-muted mb-2">Total Users</h6>
-                <h3 class="mb-0">{{ total_users }}</h3>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Charts Section -->
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white">
-                <h6 class="mb-0">Donations by Month</h6>
-            </div>
-            <div class="card-body">
-                <canvas id="donationsChart" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white">
-                <h6 class="mb-0">User Distribution</h6>
-            </div>
-            <div class="card-body">
-                <canvas id="usersChart" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white">
-                <h6 class="mb-0">Volunteer Status</h6>
-            </div>
-            <div class="card-body">
-                <canvas id="volunteersChart" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white">
-                <h6 class="mb-0">Event Participation</h6>
-            </div>
-            <div class="card-body">
-                <canvas id="eventsChart" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Downloadable Reports -->
-<div class="card shadow-sm">
-    <div class="card-header bg-white">
-        <h6 class="mb-0"><i class="fas fa-download me-2"></i>Downloadable Reports</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Report Name</th>
-                        <th>Type</th>
-                        <th>Generated Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for report in reports %}
-                    <tr>
-                        <td>
-                            <i class="fas fa-file-pdf me-2 text-danger"></i>
-                            {{ report.title }}
-                        </td>
-                        <td><span class="badge bg-info">{{ report.report_type|title }}</span></td>
-                        <td>{{ report.created_at.strftime('%d %b %Y') }}</td>
-                        <td>
-                            <a href="{{ report.file_path }}" class="btn btn-sm btn-outline-primary" download>
-                                <i class="fas fa-download"></i> Download
+        
+        <div class="row">
+            {% for report in reports %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
+                        <h5 class="card-title">{{ report.title }}</h5>
+                        {% if report.description %}
+                        <p class="card-text text-muted">{{ report.description[:100] }}...</p>
+                        {% endif %}
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted">
+                                <i class="far fa-calendar me-1"></i>
+                                {{ report.created_at.strftime('%B %Y') }}
+                            </small>
+                            {% if report.file_path %}
+                            <a href="{{ url_for('static', filename=report.file_path) }}" class="btn btn-primary btn-sm" download>
+                                <i class="fas fa-download me-1"></i>Download
                             </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td>
-                            <i class="fas fa-file-pdf me-2 text-danger"></i>
-                            Annual Report 2024
-                        </td>
-                        <td><span class="badge bg-success">Annual</span></td>
-                        <td>Jan 2024</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="downloadReport('annual')">
-                                <i class="fas fa-download"></i> Download
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Default reports -->
+        <div class="row">
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
+                        <h5 class="card-title">Annual Report 2023</h5>
+                        <p class="card-text text-muted">Comprehensive overview of our activities and achievements in 2023.</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2023</small>
+                            <button class="btn btn-primary btn-sm" disabled>
+                                <i class="fas fa-download me-1"></i>Download
                             </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <i class="fas fa-file-pdf me-2 text-danger"></i>
-                            Financial Summary
-                        </td>
-                        <td><span class="badge bg-warning">Financial</span></td>
-                        <td>Current</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="downloadReport('financial')">
-                                <i class="fas fa-download"></i> Download
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
+                        <h5 class="card-title">Financial Statement 2023</h5>
+                        <p class="card-text text-muted">Detailed financial report showing fund allocation and spending.</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2023</small>
+                            <button class="btn btn-primary btn-sm" disabled>
+                                <i class="fas fa-download me-1"></i>Download
                             </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
+                        <h5 class="card-title">Impact Report 2023</h5>
+                        <p class="card-text text-muted">Analysis of our impact across all programs and regions.</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2023</small>
+                            <button class="btn btn-primary btn-sm" disabled>
+                                <i class="fas fa-download me-1"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
+                        <h5 class="card-title">Annual Report 2022</h5>
+                        <p class="card-text text-muted">Complete review of our work and accomplishments in 2022.</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2022</small>
+                            <button class="btn btn-primary btn-sm" disabled>
+                                <i class="fas fa-download me-1"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
+                        <h5 class="card-title">Financial Statement 2022</h5>
+                        <p class="card-text text-muted">Detailed financial breakdown for the year 2022.</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2022</small>
+                            <button class="btn btn-primary btn-sm" disabled>
+                                <i class="fas fa-download me-1"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
+                        <h5 class="card-title">Impact Report 2022</h5>
+                        <p class="card-text text-muted">Measuring our reach and effectiveness in 2022.</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2022</small>
+                            <button class="btn btn-primary btn-sm" disabled>
+                                <i class="fas fa-download me-1"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Transparency Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="fw-bold mb-4">Our Commitment to Transparency</h2>
+                <p class="text-muted mb-4">
+                    We believe in complete transparency regarding how funds are utilized. 
+                    Our reports are audited by independent firms and made available to the public.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-search fa-2x text-primary mb-2"></i>
+                            <h6 class="mb-0">Independent Audit</h6>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-certificate fa-2x text-success mb-2"></i>
+                            <h6 class="mb-0">Certified Reports</h6>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-globe fa-2x text-info mb-2"></i>
+                            <h6 class="mb-0">Public Access</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-function generateReport(type) {
-    window.location.href = '/admin/reports/generate?type=' + type;
-}
-
-function downloadReport(type) {
-    window.location.href = '/admin/reports/download?type=' + type;
-}
-
-// Chart.js initialization
-document.addEventListener('DOMContentLoaded', function() {
-    // Donations by Month Chart
-    const donationsCtx = document.getElementById('donationsChart').getContext('2d');
-    new Chart(donationsCtx, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Donations ($)',
-                data: [5000, 7500, 4500, 8000, 6000, 9000],
-                backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false }
-            }
-        }
-    });
-
-    // User Distribution Chart
-    const usersCtx = document.getElementById('usersChart').getContext('2d');
-    new Chart(usersCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Users', 'Volunteers', 'Donors'],
-            datasets: [{
-                data: [150, 45, 80],
-                backgroundColor: ['#36a2eb', '#4bc0c0', '#ffcd56']
-            }]
-        },
-        options: {
-            responsive: true
-        }
-    });
-
-    // Volunteer Status Chart
-    const volunteersCtx = document.getElementById('volunteersChart').getContext('2d');
-    new Chart(volunteersCtx, {
-        type: 'pie',
-        data: {
-            labels: ['Active', 'Pending', 'Inactive'],
-            datasets: [{
-                data: [30, 10, 5],
-                backgroundColor: ['#4bc0c0', '#ffcd56', '#ff6384']
-            }]
-        },
-        options: {
-            responsive: true
-        }
-    });
-
-    // Event Participation Chart
-    const eventsCtx = document.getElementById('eventsChart').getContext('2d');
-    new Chart(eventsCtx, {
-        type: 'line',
-        data: {
-            labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-            datasets: [{
-                label: 'Participants',
-                data: [120, 180, 150, 200],
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false }
-            }
-        }
-    });
-});
-</script>
+<!-- Contact for Reports -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mx-auto text-center">
+                <h4>Need More Information?</h4>
+                <p class="text-muted">If you have specific questions about our reports or need additional documentation, please contact us.</p>
+                <a href="{{ url_for('main.contact') }}" class="btn btn-primary">
+                    <i class="fas fa-envelope me-2"></i>Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
