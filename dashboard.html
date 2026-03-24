@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Hope Foundation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-sidebar {
+        background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+        min-height: 100vh;
+        padding: 1rem 0;
+    }
+    
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        border-radius: 8px;
+        margin: 0.25rem 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .sidebar-link:hover, .sidebar-link.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+    
+    .sidebar-link i {
+        width: 20px;
+        margin-right: 10px;
+        text-align: center;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+    
+    .table-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .nav-pills .nav-link.active {
+        background-color: #005BBB;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 admin-sidebar">
+            <div class="text-center mb-4 py-3">
+                <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="Admin" height="40" class="mb-2">
+                <p class="text-white small mb-0">Admin Panel</p>
+            </div>
+            
+            <nav class="nav flex-column">
+                <a href="{{ url_for('admin.dashboard') }}" class="sidebar-link active">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="{{ url_for('admin.users') }}" class="sidebar-link">
+                    <i class="fas fa-users"></i> Users
+                </a>
+                <a href="{{ url_for('admin.donations') }}" class="sidebar-link">
+                    <i class="fas fa-donate"></i> Donations
+                </a>
+                <a href="{{ url_for('admin.volunteers') }}" class="sidebar-link">
+                    <i class="fas fa-hands-helping"></i> Volunteers
+                </a>
+                <a href="{{ url_for('admin.content') }}" class="sidebar-link">
+                    <i class="fas fa-file-alt"></i> Content
+                </a>
+                <a href="{{ url_for('admin.events') }}" class="sidebar-link">
+                    <i class="fas fa-calendar-alt"></i> Events
+                </a>
+                <a href="{{ url_for('admin.contacts') }}" class="sidebar-link">
+                    <i class="fas fa-envelope"></i> Contacts
+                </a>
+                <a href="{{ url_for('admin.analytics') }}" class="sidebar-link">
+                    <i class="fas fa-chart-line"></i> Analytics
+                </a>
+                <a href="{{ url_for('admin.settings') }}" class="sidebar-link">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <a href="{{ url_for('auth.logout') }}" class="sidebar-link mt-3">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-10 py-4" style="background: #f5f6fa;">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold mb-0">Admin Dashboard</h2>
+                    <div>
+                        <span class="text-muted me-3">{{ current_user.full_name }}</span>
+                        <img src="{{ url_for('static', filename='images/avatars/default.jpg') }}" 
+                             alt="Admin" class="rounded-circle" width="40" height="40">
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <p class="text-muted mb-1">Total Users</p>
+                                    <h3 class="fw-bold mb-0">{{ total_users }}</h3>
+                                    <small class="text-success"><i class="fas fa-arrow-up"></i> Active</small>
+                                </div>
+                                <div class="stat-icon bg-primary text-white">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <p class="text-muted mb-1">Total Donations</p>
+                                    <h3 class="fw-bold mb-0">${{ total_donated }}</h3>
+                                    <small class="text-muted">{{ total_donations }} transactions</small>
+                                </div>
+                                <div class="stat-icon bg-success text-white">
+                                    <i class="fas fa-donate"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <p class="text-muted mb-1">Volunteers</p>
+                                    <h3 class="fw-bold mb-0">{{ total_volunteers }}</h3>
+                                    <small class="text-muted">{{ pending_volunteers|length }} pending</small>
+                                </div>
+                                <div class="stat-icon bg-warning text-white">
+                                    <i class="fas fa-hands-helping"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <p class="text-muted mb-1">Events</p>
+                                    <h3 class="fw-bold mb-0">{{ total_events }}</h3>
+                                    <small class="text-muted">{{ total_content }} content items</small>
+                                </div>
+                                <div class="stat-icon bg-info text-white">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-8">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0">Donation Trends (Last 30 Days)</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="donationChart" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0">User Registrations</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="userChart" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Data -->
+                <div class="row g-4">
+                    <!-- Recent Donations -->
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Recent Donations</h5>
+                                <a href="{{ url_for('admin.donations') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                            </div>
+                            <div class="card-body p-0">
+                                {% if recent_donations %}
+                                <div class="list-group list-group-flush">
+                                    {% for donation in recent_donations %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p class="mb-0 fw-bold">${{ donation.amount }}</p>
+                                            <small class="text-muted">{{ donation.user.full_name if donation.user else 'Guest' }}</small>
+                                        </div>
+                                        <span class="badge bg-{{ 'success' if donation.payment_status == 'completed' else 'warning' }}">
+                                            {{ donation.payment_status }}
+                                        </span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4 text-muted">No recent donations</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pending Volunteers -->
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Pending Volunteer Requests</h5>
+                                <a href="{{ url_for('admin.volunteers') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                            </div>
+                            <div class="card-body p-0">
+                                {% if pending_volunteers %}
+                                <div class="list-group list-group-flush">
+                                    {% for volunteer in pending_volunteers %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p class="mb-0 fw-bold">{{ volunteer.full_name }}</p>
+                                            <small class="text-muted">{{ volunteer.email }}</small>
+                                        </div>
+                                        <a href="{{ url_for('admin.volunteer_detail', volunteer_id=volunteer.id) }}" 
+                                           class="btn btn-sm btn-primary">Review</a>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4 text-muted">No pending requests</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Contacts -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Recent Contact Messages</h5>
+                        <a href="{{ url_for('admin.contacts') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if recent_contacts %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Subject</th>
+                                        <th>Email</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for contact in recent_contacts %}
+                                    <tr>
+                                        <td>{{ contact.name }}</td>
+                                        <td>{{ contact.subject[:50] }}...</td>
+                                        <td>{{ contact.email }}</td>
+                                        <td>{{ contact.created_at.strftime('%d %b %Y') }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'success' if contact.status == 'resolved' else 'warning' }}">
+                                                {{ contact.status }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4 text-muted">No recent messages</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Donation Chart
+    const donationCtx = document.getElementById('donationChart').getContext('2d');
+    new Chart(donationCtx, {
+        type: 'line',
+        data: {
+            labels: {{ donation_dates|tojson }},
+            datasets: [{
+                label: 'Donations ($)',
+                data: {{ donation_totals|tojson }},
+                borderColor: '#005BBB',
+                backgroundColor: 'rgba(0, 91, 187, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    
+    // User Registration Chart
+    const userCtx = document.getElementById('userChart').getContext('2d');
+    new Chart(userCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ user_dates|tojson }},
+            datasets: [{
+                label: 'New Users',
+                data: {{ user_counts|tojson }},
+                backgroundColor: '#28a745',
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
