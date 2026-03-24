@@ -1,0 +1,153 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Content Management - Hope Foundation Admin{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="fas fa-file-alt me-2"></i>Content Management</h4>
+    <a href="{{ url_for('admin.content_create') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Create New Content
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- Category Filter -->
+<div class="mb-4">
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary active" onclick="filterContent('all')">All</button>
+        <button type="button" class="btn btn-outline-primary" onclick="filterContent('blog')">Blogs</button>
+        <button type="button" class="btn btn-outline-primary" onclick="filterContent('news')">News</button>
+        <button type="button" class="btn btn-outline-primary" onclick="filterContent('report')">Reports</button>
+        <button type="button" class="btn btn-outline-primary" onclick="filterContent('story')">Success Stories</button>
+    </div>
+</div>
+
+<div class="row">
+    {% for content in content %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            {% if content.media_url %}
+            <img src="{{ url_for('static', filename='uploads/' + content.media_url) }}" class="card-img-top" alt="{{ content.title }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                <i class="fas fa-image fa-3x text-white"></i>
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <span class="badge bg-{{ 'primary' if content.category == 'blog' else ('info' if content.category == 'news' else ('success' if content.category == 'report' else 'warning')) }} mb-2">
+                    {{ content.category|title }}
+                </span>
+                <h5 class="card-title">{{ content.title }}</h5>
+                <p class="card-text text-muted small">
+                    {{ content.description[:100] if content.description else 'No description' }}...
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">{{ content.created_at.strftime('%d %b %Y') }}</small>
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ url_for('admin.content_edit', content_id=content.id) }}" class="btn btn-outline-warning">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button class="btn btn-outline-danger" onclick="deleteContent({{ content.id }})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" {{ 'checked' if content.is_published }} onchange="toggleStatus({{ content.id }}, this.checked)">
+                    <label class="form-check-label small">Published</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if not content.items %}
+<div class="text-center py-5">
+    <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+    <h5 class="text-muted">No content found</h5>
+    <p class="text-muted">Create your first piece of content to get started.</p>
+    <a href="{{ url_for('admin.content_create') }}" class="btn btn-primary">Create Content</a>
+</div>
+{% endif %}
+
+<!-- Create Content Modal -->
+<div class="modal fade" id="createContentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Content</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.content_create') }}" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select name="category" class="form-select">
+                            <option value="blog">Blog</option>
+                            <option value="news">News</option>
+                            <option value="report">Report</option>
+                            <option value="story">Success Story</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" rows="5"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Content</label>
+                        <textarea name="content_body" class="form-control" rows="10"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Media File</label>
+                        <input type="file" name="media" class="form-control" accept="image/*,video/*,.pdf">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="publish" id="publishCheck">
+                            <label class="form-check-label" for="publishCheck">Publish immediately</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Publish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterContent(category) {
+    window.location.href = '{{ url_for("admin.content") }}?category=' + category;
+}
+
+function deleteContent(id) {
+    if (confirm('Are you sure you want to delete this content?')) {
+        window.location.href = '/admin/content/delete/' + id;
+    }
+}
+
+function toggleStatus(id, published) {
+    window.location.href = '/admin/content/toggle/' + id;
+}
+</script>
+{% endblock %}
