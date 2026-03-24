@@ -1,0 +1,101 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if is_create %}Create Content{% else %}Edit Content{% endif %} - Hope Foundation Admin{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>{% if is_create %}Create Content{% else %}Edit Content{% endif %}</h4>
+    <a href="{{ url_for('admin.content') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="POST" action="{% if is_create %}{{ url_for('admin.content_create') }}{% else %}{{ url_for('admin.content_edit', content_id=content.id) }}{% endif %}" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" name="title" class="form-control" value="{% if content %}{{ content.title }}{% endif %}" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select name="category" class="form-select">
+                            <option value="blog" {% if content and content.category == 'blog' %}selected{% endif %}>Blog</option>
+                            <option value="news" {% if content and content.category == 'news' %}selected{% endif %}>News</option>
+                            <option value="report" {% if content and content.category == 'report' %}selected{% endif %}>Report</option>
+                            <option value="story" {% if content and content.category == 'story' %}selected{% endif %}>Success Story</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Short Description</label>
+                <textarea name="description" class="form-control" rows="2">{% if content %}{{ content.description or '' }}{% endif %}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Content</label>
+                <textarea name="content_body" class="form-control" rows="15">{% if content %}{{ content.content_body or '' }}{% endif %}</textarea>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Featured Image</label>
+                        {% if content and content.media_url %}
+                        <div class="mb-2">
+                            <img src="{{ url_for('static', filename='uploads/' + content.media_url) }}" alt="Current image" class="img-thumbnail" style="max-height: 150px;">
+                            <small class="d-block text-muted">Current image</small>
+                        </div>
+                        {% endif %}
+                        <input type="file" name="media" class="form-control" accept="image/*">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <div class="form-control-plaintext">
+                            {% if content and content.is_published %}
+                            <span class="badge bg-success">Published</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Draft</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" name="publish" id="publish" {% if content and content.is_published %}checked{% endif %}>
+                            <label class="form-check-label" for="publish">Publish immediately</label>
+                        </div>
+                        <small class="text-muted">Use buttons below to publish or save as draft</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('admin.content') }}" class="btn btn-outline-secondary">Cancel</a>
+                <div>
+                    <button type="submit" name="save_draft" class="btn btn-warning me-2">Save as Draft</button>
+                    <button type="submit" name="publish" class="btn btn-primary">Publish</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
