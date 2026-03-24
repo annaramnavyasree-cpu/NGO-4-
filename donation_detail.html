@@ -1,0 +1,140 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Donation Details - Hope Foundation Admin{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="fas fa-hand-holding-heart me-2"></i>Donation Details</h4>
+    <div>
+        <a href="{{ url_for('admin.donations') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back
+        </a>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">Donation Information</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td class="text-muted">Donation ID</td>
+                        <td>#{{ donation.id }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Amount</td>
+                        <td><h4 class="text-success mb-0">${{ donation.amount }}</h4></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Payment ID</td>
+                        <td><code>{{ donation.payment_id }}</code></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Donation Type</td>
+                        <td>
+                            <span class="badge bg-{{ 'info' if donation.donation_type == 'one-time' else 'warning' }}">
+                                {{ donation.donation_type|title }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Status</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if donation.status == 'completed' else ('warning' if donation.status == 'pending' else 'danger') }}">
+                                {{ donation.status|title }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Date</td>
+                        <td>{{ donation.created_at.strftime('%d %b %Y at %I:%M %p') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        {% if donation.user %}
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">Donor Information</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-circle bg-primary text-white me-3" style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        {{ donation.user.full_name[0]|upper }}
+                    </div>
+                    <div>
+                        <h6 class="mb-0">{{ donation.user.full_name }}</h6>
+                        <small class="text-muted">{{ donation.user.email }}</small>
+                    </div>
+                    <a href="{{ url_for('admin.user_detail', user_id=donation.user.id) }}" class="btn btn-sm btn-outline-primary ms-auto">
+                        View Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">Actions</h6>
+            </div>
+            <div class="card-body">
+                {% if donation.status == 'pending' %}
+                <a href="{{ url_for('admin.donation_approve', donation_id=donation.id) }}" class="btn btn-success w-100 mb-2">
+                    <i class="fas fa-check me-1"></i> Mark as Completed
+                </a>
+                {% endif %}
+                <button class="btn btn-outline-primary w-100 mb-2" onclick="sendReceipt()">
+                    <i class="fas fa-envelope me-1"></i> Send Receipt
+                </button>
+                <button class="btn btn-outline-danger w-100" onclick="deleteDonation({{ donation.id }})">
+                    <i class="fas fa-trash me-1"></i> Delete
+                </button>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">Payment Details</h6>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted mb-1">Payment ID:</p>
+                <code>{{ donation.payment_id }}</code>
+                {% if donation.razorpay_payment_id %}
+                <p class="small text-muted mb-1 mt-3">Razorpay Payment ID:</p>
+                <code>{{ donation.razorpay_payment_id }}</code>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteDonation(id) {
+    if (confirm('Are you sure you want to delete this donation?')) {
+        window.location.href = '/admin/donation/delete/' + id;
+    }
+}
+
+function sendReceipt() {
+    alert('Receipt sent to donor!');
+}
+</script>
+{% endblock %}
