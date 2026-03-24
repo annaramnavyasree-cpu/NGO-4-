@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Our Mission - NGO{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-success text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold">Our Mission</h1>
+                <p class="lead">The driving force behind everything we do</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                {% if page and page.image_url %}
+                <img src="{{ url_for('static', filename='uploads/' + page.image_url) }}" alt="Our Mission" class="img-fluid rounded shadow">
+                {% else %}
+                <div class="bg-light rounded p-5 text-center">
+                    <i class="fas fa-bullseye fa-5x text-success"></i>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-6">
+                {% if page and page.content %}
+                <div class="mission-content">
+                    {{ page.content|safe }}
+                </div>
+                {% else %}
+                <h2 class="mb-4">Empowering Communities, Transforming Lives</h2>
+                <p class="lead mb-4">
+                    Our mission is to create sustainable positive change in underserved communities 
+                    by providing access to quality education, healthcare, and economic opportunities.
+                </p>
+                <div class="row mt-4">
+                    <div class="col-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success text-white rounded-circle p-3 me-3">
+                                <i class="fas fa-graduation-cap fa-lg"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Quality Education</h6>
+                                <small class="text-muted">For all children</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success text-white rounded-circle p-3 me-3">
+                                <i class="fas fa-heartbeat fa-lg"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Healthcare Access</h6>
+                                <small class="text-muted">Medical services</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success text-white rounded-circle p-3 me-3">
+                                <i class="fas fa-seedling fa-lg"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Environmental Care</h6>
+                                <small class="text-muted">Sustainable practices</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success text-white rounded-circle p-3 me-3">
+                                <i class="fas fa-hands-helping fa-lg"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Community Support</h6>
+                                <small class="text-muted">Social welfare</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Call to Action -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center py-4">
+                        <h3>Join Our Mission</h3>
+                        <p class="mb-4">Be part of the change you want to see in the world</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{{ url_for('main.donate') }}" class="btn btn-light btn-lg">
+                                <i class="fas fa-heart me-2"></i>Donate Now
+                            </a>
+                            <a href="{{ url_for('main.volunteer') }}" class="btn btn-outline-light btn-lg">
+                                <i class="fas fa-hands me-2"></i>Volunteer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
