@@ -1,205 +1,84 @@
 {% extends "base.html" %}
 
-{% block title %}Annual Reports - NGO{% endblock %}
+{% block title %}Reports & Documents - NGO{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
-<section class="bg-dark text-white py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 mx-auto text-center">
-                <h1 class="display-4 fw-bold">Annual Reports</h1>
-                <p class="lead">Transparency and accountability in everything we do</p>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">My Account</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{{ url_for('user.dashboard') }}">Dashboard</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.donations') }}">My Donations</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.volunteer_status') }}">My Volunteer Status</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.event_registrations') }}">My Events</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.profile') }}">Profile</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.change_password') }}">Change Password</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
-
-<!-- Reports Section -->
-<section class="py-5">
-    <div class="container">
-        {% if reports %}
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            Click on any report below to view or download the full document.
         </div>
         
-        <div class="row">
-            {% for report in reports %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
-                        <h5 class="card-title">{{ report.title }}</h5>
-                        {% if report.description %}
-                        <p class="card-text text-muted">{{ report.description[:100] }}...</p>
-                        {% endif %}
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <small class="text-muted">
-                                <i class="far fa-calendar me-1"></i>
-                                {{ report.created_at.strftime('%B %Y') }}
-                            </small>
-                            {% if report.file_path %}
-                            <a href="{{ url_for('static', filename=report.file_path) }}" class="btn btn-primary btn-sm" download>
-                                <i class="fas fa-download me-1"></i>Download
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0"><i class="fas fa-file-alt me-2"></i>Reports & Documents</h4>
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <!-- Default reports -->
-        <div class="row">
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
-                        <h5 class="card-title">Annual Report 2023</h5>
-                        <p class="card-text text-muted">Comprehensive overview of our activities and achievements in 2023.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2023</small>
-                            <button class="btn btn-primary btn-sm" disabled>
-                                <i class="fas fa-download me-1"></i>Download
-                            </button>
-                        </div>
+                <div class="card-body">
+                    {% if reports %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Access our annual reports, financial statements, and impact documents to see how your contributions make a difference.
                     </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
-                        <h5 class="card-title">Financial Statement 2023</h5>
-                        <p class="card-text text-muted">Detailed financial report showing fund allocation and spending.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2023</small>
-                            <button class="btn btn-primary btn-sm" disabled>
-                                <i class="fas fa-download me-1"></i>Download
-                            </button>
+                    
+                    <div class="row">
+                        {% for report in reports %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ report.title }}</h5>
+                                    {% if report.description %}
+                                    <p class="card-text text-muted">{{ report.description[:150] }}...</p>
+                                    {% endif %}
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            {{ report.created_at.strftime('%B %d, %Y') }}
+                                        </small>
+                                        {% if report.file_path %}
+                                        <a href="{{ url_for('static', filename=report.file_path) }}" class="btn btn-sm btn-primary" download>
+                                            <i class="fas fa-download me-1"></i>Download
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        {% endfor %}
                     </div>
+                    
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                        <h5>No Reports Available</h5>
+                        <p class="text-muted">Reports and documents will appear here when available.</p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
-                        <h5 class="card-title">Impact Report 2023</h5>
-                        <p class="card-text text-muted">Analysis of our impact across all programs and regions.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2023</small>
-                            <button class="btn btn-primary btn-sm" disabled>
-                                <i class="fas fa-download me-1"></i>Download
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
-                        <h5 class="card-title">Annual Report 2022</h5>
-                        <p class="card-text text-muted">Complete review of our work and accomplishments in 2022.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2022</small>
-                            <button class="btn btn-primary btn-sm" disabled>
-                                <i class="fas fa-download me-1"></i>Download
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
-                        <h5 class="card-title">Financial Statement 2022</h5>
-                        <p class="card-text text-muted">Detailed financial breakdown for the year 2022.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2022</small>
-                            <button class="btn btn-primary btn-sm" disabled>
-                                <i class="fas fa-download me-1"></i>Download
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
-                        <h5 class="card-title">Impact Report 2022</h5>
-                        <p class="card-text text-muted">Measuring our reach and effectiveness in 2022.</p>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <small class="text-muted"><i class="far fa-calendar me-1"></i>2022</small>
-                            <button class="btn btn-primary btn-sm" disabled>
-                                <i class="fas fa-download me-1"></i>Download
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-</section>
-
-<!-- Transparency Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-                <h2 class="fw-bold mb-4">Our Commitment to Transparency</h2>
-                <p class="text-muted mb-4">
-                    We believe in complete transparency regarding how funds are utilized. 
-                    Our reports are audited by independent firms and made available to the public.
-                </p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <i class="fas fa-search fa-2x text-primary mb-2"></i>
-                            <h6 class="mb-0">Independent Audit</h6>
-                        </div>
-                    </div>
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <i class="fas fa-certificate fa-2x text-success mb-2"></i>
-                            <h6 class="mb-0">Certified Reports</h6>
-                        </div>
-                    </div>
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <i class="fas fa-globe fa-2x text-info mb-2"></i>
-                            <h6 class="mb-0">Public Access</h6>
-                        </div>
-                    </div>
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-question-circle me-2"></i>Need More Information?</h5>
+                    <p class="text-muted">If you need specific documents or have questions about our reports, please contact us.</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-envelope me-2"></i>Contact Us
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-</section>
-
-<!-- Contact for Reports -->
-<section class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 mx-auto text-center">
-                <h4>Need More Information?</h4>
-                <p class="text-muted">If you have specific questions about our reports or need additional documentation, please contact us.</p>
-                <a href="{{ url_for('main.contact') }}" class="btn btn-primary">
-                    <i class="fas fa-envelope me-2"></i>Contact Us
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+</div>
 {% endblock %}

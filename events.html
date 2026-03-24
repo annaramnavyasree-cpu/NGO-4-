@@ -1,148 +1,139 @@
 {% extends "base.html" %}
 
-{% block title %}Events - NGO{% endblock %}
+{% block title %}Events - {{ contact.name }}{% endblock %}
 
 {% block content %}
 <!-- Page Header -->
-<section class="bg-purple text-white py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<section class="page-header bg-info text-white py-5">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 mx-auto text-center">
-                <h1 class="display-4 fw-bold">Upcoming Events</h1>
-                <p class="lead">Join us in making a difference</p>
+            <div class="col-md-8">
+                <h1 class="display-4">Upcoming Events</h1>
+                <p class="lead">Join our events and be part of the change</p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Events Section -->
-<section class="py-5">
+<section class="events-section py-5">
     <div class="container">
-        <!-- Event Categories -->
         <div class="row mb-4">
-            <div class="col-12">
-                <div class="btn-group flex-wrap" role="group">
-                    <a href="{{ url_for('main.events') }}" class="btn btn{{ '-outline' }}-purple" style="background: #667eea; color: white;">All Events</a>
-                    <a href="{{ url_for('main.events', category='fundraiser') }}" class="btn btn-outline-purple">Fundraisers</a>
-                    <a href="{{ url_for('main.events', category='awareness') }}" class="btn btn-outline-purple">Awareness</a>
-                    <a href="{{ url_for('main.events', category='volunteer') }}" class="btn btn-outline-purple">Volunteer</a>
-                    <a href="{{ url_for('main.events', category='community') }}" class="btn btn-outline-purple">Community</a>
-                </div>
+            <div class="col-md-6">
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#upcoming" data-bs-toggle="tab">Upcoming</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#past" data-bs-toggle="tab">Past Events</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <form class="d-flex" method="GET" action="{{ url_for('user.events') }}">
+                    <input class="form-control me-2" type="search" name="search" placeholder="Search events..." aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
             </div>
         </div>
-
-        {% if events %}
-        <div class="row">
-            {% for event in events %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm event-card">
-                    {% if event.image_url %}
-                    <img src="{{ url_for('static', filename='uploads/' + event.image_url) }}" class="card-img-top" alt="{{ event.title }}" style="height: 200px; object-fit: cover;">
-                    {% else %}
-                    <div class="bg-purple text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fas fa-calendar-alt fa-3x"></i>
-                    </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge bg-primary text-capitalize">{{ event.category or 'Event' }}</span>
-                            {% if event.event_date %}
-                            <small class="text-muted">
-                                <i class="far fa-calendar me-1"></i>
-                                {{ event.event_date.strftime('%B %d, %Y') }}
-                            </small>
+        
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="upcoming">
+                {% if events %}
+                <div class="row">
+                    {% for event in events %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 shadow-sm event-card">
+                            {% if event.image_url %}
+                            <img src="{{ url_for('static', filename='uploads/' + event.image_url) }}" class="card-img-top" alt="{{ event.title }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-calendar-alt fa-3x text-white"></i>
+                            </div>
                             {% endif %}
+                            <div class="card-body">
+                                <div class="event-date mb-2">
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        {{ event.start_date.strftime('%B %d, %Y') }}
+                                    </span>
+                                    {% if event.end_date and event.end_date != event.start_date %}
+                                    <span class="badge bg-secondary">
+                                        - {{ event.end_date.strftime('%B %d, %Y') }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                <h5 class="card-title">{{ event.title }}</h5>
+                                <p class="card-text text-muted">{{ event.description[:150] }}...</p>
+                                <div class="event-meta mb-3">
+                                    <p class="mb-1"><i class="fas fa-map-marker-alt me-2 text-primary"></i>{{ event.location }}</p>
+                                    {% if event.organizer %}
+                                    <p class="mb-0"><i class="fas fa-user me-2 text-primary"></i>{{ event.organizer }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">
+                                        <i class="fas fa-users me-1"></i>
+                                        {{ event.registrations|length if event.registrations else 0 }} registered
+                                    </span>
+                                    <a href="{{ url_for('user.event_detail', event_id=event.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                                </div>
+                            </div>
                         </div>
-                        <h5 class="card-title">{{ event.title }}</h5>
-                        <p class="card-text text-muted">
-                            {{ event.description[:120] }}{% if event.description|length > 120 %}...{% endif %}
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                <i class="fas fa-map-marker-alt me-1"></i>
-                                {{ event.location or 'Online' }}
-                            </small>
-                            <a href="{{ url_for('main.event_detail', slug=event.slug) }}" class="btn btn-sm btn-outline-primary">
-                                Details <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                    <h3>No Upcoming Events</h3>
+                    <p class="text-muted">Check back later for new events</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="tab-pane fade" id="past">
+                <div class="text-center py-5">
+                    <i class="fas fa-history fa-4x text-muted mb-3"></i>
+                    <h3>Past Events</h3>
+                    <p class="text-muted">View our past events and their impact</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Calendar View -->
+<section class="calendar-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Event Calendar</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="calendar-placeholder text-center py-5">
+                            <i class="fas fa-calendar-alt fa-5x text-muted mb-3"></i>
+                            <p class="text-muted">Interactive calendar view coming soon!</p>
+                            <p class="small text-muted">Subscribe to our newsletter to get event updates</p>
                         </div>
                     </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
-        {% else %}
-        <div class="text-center py-5">
-            <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
-            <h4>No Events Found</h4>
-            <p class="text-muted">Check back soon for upcoming events!</p>
-            <a href="{{ url_for('main.contact') }}" class="btn btn-primary">
-                <i class="fas fa-envelope me-2"></i>Contact Us for Updates
-            </a>
-        </div>
-        {% endif %}
     </div>
 </section>
 
 <!-- Newsletter Section -->
-<section class="bg-light py-5">
+<section class="newsletter-section py-5">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-                <h3>Never Miss an Event</h3>
-                <p class="text-muted mb-4">Subscribe to our newsletter to stay updated about upcoming events</p>
-                <form class="row g-3 justify-content-center">
-                    <div class="col-auto">
-                        <input type="email" class="form-control" placeholder="Enter your email" required>
-                    </div>
-                    <div class="col-auto">
-                        <button type="submit" class="btn btn-primary">Subscribe</button>
-                    </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h3>Never Miss an Event!</h3>
+                <p class="text-muted mb-4">Subscribe to our newsletter to get the latest updates on events and activities.</p>
+                <form class="d-flex justify-content-center">
+                    <input type="email" class="form-control me-2" placeholder="Enter your email" style="max-width: 300px;">
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
                 </form>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Past Events Preview -->
-<section class="py-5">
-    <div class="container">
-        <div class="row mb-4">
-            <div class="col-12 d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">Past Events Highlights</h3>
-                <a href="#" class="btn btn-outline-secondary">View All</a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-running fa-3x text-purple mb-3"></i>
-                        <h5>Charity Run 2023</h5>
-                        <p class="text-muted">Over 500 participants raised $10,000 for education programs.</p>
-                        <span class="badge bg-secondary">Completed</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-hands-helping fa-3x text-purple mb-3"></i>
-                        <h5>Medical Camp</h5>
-                        <p class="text-muted">Provided free checkups to 200+ community members.</p>
-                        <span class="badge bg-secondary">Completed</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-seedling fa-3x text-purple mb-3"></i>
-                        <h5>Tree Plantation</h5>
-                        <p class="text-muted">Planted 500 trees in the local community.</p>
-                        <span class="badge bg-secondary">Completed</span>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Volunteer With Us - {{ contact.name }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header bg-success text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="display-4">Join Our Volunteer Team</h1>
+                <p class="lead">Make a difference in your community. Become a volunteer today!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Volunteer Section -->
+<section class="volunteer-section py-5">
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4">Volunteer Registration Form</h3>
+                        <p class="text-muted mb-4">Fill out the form below to join our volunteer team. We'll review your application and get back to you soon.</p>
+                        
+                        <form method="POST" action="{{ url_for('user.volunteer') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <h5 class="mb-3">Personal Information</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="full_name" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="full_name" name="full_name" value="{{ current_user.full_name if current_user.is_authenticated else '' }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email if current_user.is_authenticated else '' }}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="date_of_birth" class="form-label">Date of Birth *</label>
+                                    <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Address</label>
+                                <textarea class="form-control" id="address" name="address" rows="2"></textarea>
+                            </div>
+                            
+                            <h5 class="mb-3 mt-4">Volunteer Details</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="availability" class="form-label">Availability *</label>
+                                    <select class="form-select" id="availability" name="availability" required>
+                                        <option value="">Select your availability</option>
+                                        <option value="weekdays_morning">Weekdays - Morning</option>
+                                        <option value="weekdays_afternoon">Weekdays - Afternoon</option>
+                                        <option value="weekdays_evening">Weekdays - Evening</option>
+                                        <option value="weekends_morning">Weekends - Morning</option>
+                                        <option value="weekends_afternoon">Weekends - Afternoon</option>
+                                        <option value="weekends_evening">Weekends - Evening</option>
+                                        <option value="flexible">Flexible</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="preferred_area" class="form-label">Preferred Area *</label>
+                                    <select class="form-select" id="preferred_area" name="preferred_area" required>
+                                        <option value="">Select your preferred area</option>
+                                        <option value="education">Education & Tutoring</option>
+                                        <option value="healthcare">Healthcare Support</option>
+                                        <option value="environment">Environment & Conservation</option>
+                                        <option value="community">Community Development</option>
+                                        <option value="events">Event Management</option>
+                                        <option value="administration">Administrative Support</option>
+                                        <option value="fundraising">Fundraising</option>
+                                        <option value="media">Media & Communications</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="skills" class="form-label">Skills & Experience</label>
+                                <textarea class="form-control" id="skills" name="skills" rows="4" placeholder="Tell us about your skills, experience, and any relevant qualifications..."></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="motivation" class="form-label">Why do you want to volunteer with us? *</label>
+                                <textarea class="form-control" id="motivation" name="motivation" rows="3" required></textarea>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="newsletter">
+                                <label class="form-check-label" for="newsletter">
+                                    I would like to receive updates about volunteer opportunities and events
+                                </label>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-hands-helping me-2"></i>Submit Application
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Why Volunteer -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-3">Why Volunteer With Us?</h4>
+                        <ul class="list-unstyled">
+                            <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Make a real impact in your community</li>
+                            <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Gain valuable experience and skills</li>
+                            <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Meet like-minded people</li>
+                            <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Flexible scheduling options</li>
+                            <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Training and support provided</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Volunteer Benefits -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-3">Volunteer Benefits</h4>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-star text-warning me-2"></i>Certificate of volunteering</li>
+                            <li class="mb-2"><i class="fas fa-star text-warning me-2"></i>Free training programs</li>
+                            <li class="mb-2"><i class="fas fa-star text-warning me-2"></i>Networking opportunities</li>
+                            <li class="mb-2"><i class="fas fa-star text-warning me-2"></i>Letter of recommendation</li>
+                            <li class="mb-2"><i class="fas fa-star text-warning me-2"></i>Volunteer recognition events</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-3">Questions?</h4>
+                        <p class="text-muted">Contact our volunteer coordinator:</p>
+                        <p class="mb-1"><i class="fas fa-envelope me-2"></i>volunteers@hopefoundation.org</p>
+                        <p class="mb-0"><i class="fas fa-phone me-2"></i>+1 234 567 8900</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How much time do I need to commit?
+                            </button>
+                        </h3>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We offer flexible scheduling. You can commit as little as 2-4 hours per week. We work with your schedule to find the best fit.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                Do I need prior experience?
+                            </button>
+                        </h3>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Most positions don't require prior experience. We provide comprehensive training for all volunteers. Some specialized roles may require specific skills.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Is there an age limit for volunteers?
+                            </button>
+                        </h3>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Volunteers must be at least 16 years old. For volunteers under 18, we'll need parental consent. Some roles may have higher age requirements.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

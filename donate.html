@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}Donate - Hope Foundation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .donate-hero {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.9), rgba(247, 147, 30, 0.9)), 
+                    url('{{ url_for("static", filename="images/donate-hero.jpg") }}');
+        background-size: cover;
+        background-position: center;
+        padding: 80px 0;
+    }
+    
+    .donation-amount {
+        position: relative;
+    }
+    
+    .amount-btn {
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        padding: 15px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .amount-btn:hover, .amount-btn.active {
+        border-color: #005BBB;
+        background: #f0f7ff;
+    }
+    
+    .amount-btn h4 {
+        margin: 0;
+        color: #333;
+    }
+    
+    .impact-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="donate-hero text-white text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Make a Donation</h1>
+        <p class="lead">Your contribution can change lives. Every donation matters.</p>
+    </div>
+</section>
+
+<!-- Donation Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-4">Donation Details</h3>
+                        
+                        <form method="POST" action="{{ url_for('user.donate') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <!-- Donation Type -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Donation Type</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="donation_type" 
+                                               id="oneTime" value="one-time" checked>
+                                        <label class="form-check-label" for="oneTime">
+                                            <strong>One-time</strong>
+                                            <small class="d-block text-muted">Single donation</small>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="donation_type" 
+                                               id="recurring" value="recurring">
+                                        <label class="form-check-label" for="recurring">
+                                            <strong>Monthly</strong>
+                                            <small class="d-block text-muted">Support regularly</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Amount Selection -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Select Amount</label>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-4">
+                                        <label class="amount-btn d-block">
+                                            <input type="radio" name="amount_radio" value="25" class="d-none">
+                                            <h4>$25</h4>
+                                        </label>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="amount-btn d-block">
+                                            <input type="radio" name="amount_radio" value="50" class="d-none">
+                                            <h4>$50</h4>
+                                        </label>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="amount-btn d-block">
+                                            <input type="radio" name="amount_radio" value="100" class="d-none">
+                                            <h4>$100</h4>
+                                        </label>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="amount-btn d-block">
+                                            <input type="radio" name="amount_radio" value="250" class="d-none">
+                                            <h4>$250</h4>
+                                        </label>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="amount-btn d-block">
+                                            <input type="radio" name="amount_radio" value="500" class="d-none">
+                                            <h4>$500</h4>
+                                        </label>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="amount-btn d-block">
+                                            <input type="radio" name="amount_radio" value="1000" class="d-none">
+                                            <h4>$1000</h4>
+                                        </label>
+                                    </div>
+                                </div>
+                                <label class="form-label">Or enter custom amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control form-control-lg" name="amount" 
+                                           id="customAmount" placeholder="Enter amount" min="1">
+                                </div>
+                            </div>
+                            
+                            <!-- Donor Info -->
+                            {% if not current_user.is_authenticated %}
+                            <div class="mb-4">
+                                <h5 class="fw-bold mb-3">Your Information</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Full Name *</label>
+                                        <input type="text" class="form-control" name="name" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-control" name="email" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone</label>
+                                        <input type="tel" class="form-control" name="phone">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Notes -->
+                            <div class="mb-4">
+                                <label class="form-label">Message (Optional)</label>
+                                <textarea class="form-control" name="notes" rows="3" 
+                                          placeholder="Leave a message or dedicate your donation..."></textarea>
+                            </div>
+                            
+                            <!-- Submit -->
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-heart me-2"></i>Donate Now
+                            </button>
+                            
+                            <p class="text-center text-muted mt-3 small">
+                                <i class="fas fa-lock me-1"></i>Secure payment. Your data is protected.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Impact Info -->
+            <div class="col-lg-5">
+                <div class="impact-card mb-4">
+                    <h4 class="fw-bold mb-4">Your Impact</h4>
+                    <div class="impact-item mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>$25</strong>
+                        </div>
+                        <p class="text-muted mb-0">Provides school supplies for one child</p>
+                    </div>
+                    <div class="impact-item mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>$50</strong>
+                        </div>
+                        <p class="text-muted mb-0">Funds medical checkup for a family</p>
+                    </div>
+                    <div class="impact-item mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>$100</strong>
+                        </div>
+                        <p class="text-muted mb-0">Provides clean water for a community</p>
+                    </div>
+                    <div class="impact-item">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>$250</strong>
+                        </div>
+                        <p class="text-muted mb-0">Sponsors a child's education for a year</p>
+                    </div>
+                </div>
+                
+                <div class="card border-0 bg-light shadow-sm">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3">Tax Benefits</h5>
+                        <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Donations are tax-deductible</p>
+                        <p class="mb-0"><i class="fas fa-file-alt text-primary me-2"></i>Receipt issued for all donations</p>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted mb-2">Have questions?</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Handle amount button selection
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all
+            document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+            // Add to clicked
+            this.classList.add('active');
+            // Set custom amount value
+            const value = this.querySelector('input').value;
+            document.getElementById('customAmount').value = value;
+        });
+    });
+    
+    // Update radio when custom amount changes
+    document.getElementById('customAmount').addEventListener('input', function() {
+        document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+    });
+</script>
+{% endblock %}

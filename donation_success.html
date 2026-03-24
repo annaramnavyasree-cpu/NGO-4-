@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Donation Successful - NGO{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-body text-center p-5">
+                    <div class="success-animation mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    
+                    <h2 class="mb-3">Thank You for Your Generosity!</h2>
+                    <p class="text-muted mb-4">Your donation has been processed successfully.</p>
+                    
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Donation Details</h5>
+                            <table class="table table-borderless mb-0">
+                                <tr>
+                                    <td class="text-muted">Transaction ID:</td>
+                                    <td><strong>{{ donation.transaction_id }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Amount:</td>
+                                    <td><strong class="text-success">${{ "%.2f"|format(donation.amount) }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Donation Type:</td>
+                                    <td>
+                                        {% if donation.donation_type == 'recurring' %}
+                                        <span class="badge bg-info">Recurring</span>
+                                        {% else %}
+                                        <span class="badge bg-primary">One-time</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Payment Method:</td>
+                                    <td>{{ donation.payment_method|title }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Date:</td>
+                                    <td>{{ donation.created_at.strftime('%B %d, %Y at %I:%M %p') }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Status:</td>
+                                    <td>
+                                        {% if donation.payment_status == 'completed' %}
+                                        <span class="badge bg-success">Completed</span>
+                                        {% else %}
+                                        <span class="badge bg-warning">{{ donation.payment_status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    {% if donation.notes %}
+                    <div class="alert alert-info">
+                        <strong>Your Message:</strong> {{ donation.notes }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="alert alert-success">
+                        <i class="fas fa-envelope me-2"></i>
+                        <strong>Receipt Sent!</strong> A confirmation email has been sent to your registered email address.
+                    </div>
+                    
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a href="{{ url_for('user.donations') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-2"></i>View All Donations
+                        </a>
+                        <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+                            <i class="fas fa-home me-2"></i>Go to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <h5 class="mb-3">Share Your Kindness</h5>
+                <p class="text-muted">Inspire others to give by sharing your contribution.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url_root }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                        <i class="fab fa-facebook me-1"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?text=I just donated to support this cause!&url={{ request.url_root }}" target="_blank" class="btn btn-outline-info btn-sm">
+                        <i class="fab fa-twitter me-1"></i> Twitter
+                    </a>
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.url_root }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                        <i class="fab fa-linkedin me-1"></i> LinkedIn
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

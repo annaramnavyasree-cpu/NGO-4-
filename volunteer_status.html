@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Volunteer Status - NGO{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">My Account</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{{ url_for('user.dashboard') }}">Dashboard</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.donations') }}">My Donations</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.volunteer_status') }}" class="text-primary">My Volunteer Status</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.event_registrations') }}">My Events</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.profile') }}">Profile</a></li>
+                        <li class="mb-2"><a href="{{ url_for('user.change_password') }}">Change Password</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-hands-helping me-2"></i>My Volunteer Status</h4>
+                </div>
+                <div class="card-body">
+                    {% if volunteer %}
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted">Status</h6>
+                                    {% if volunteer.status == 'approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                    {% elif volunteer.status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                    {% elif volunteer.status == 'rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ volunteer.status }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted">Applied Date</h6>
+                                    <strong>{{ volunteer.created_at.strftime('%B %d, %Y') }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted">Availability</h6>
+                                    <strong>{{ volunteer.availability }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5>Your Information</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="text-muted" style="width: 200px;">Full Name:</td>
+                                <td><strong>{{ volunteer.full_name }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Email:</td>
+                                <td>{{ volunteer.email }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Phone:</td>
+                                <td>{{ volunteer.phone }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Address:</td>
+                                <td>{{ volunteer.address }}</td>
+                            </tr>
+                            {% if volunteer.skills %}
+                            <tr>
+                                <td class="text-muted">Skills:</td>
+                                <td>{{ volunteer.skills }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if volunteer.experience %}
+                            <tr>
+                                <td class="text-muted">Experience:</td>
+                                <td>{{ volunteer.experience }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if volunteer.motivation %}
+                            <tr>
+                                <td class="text-muted">Motivation:</td>
+                                <td>{{ volunteer.motivation }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                    
+                    {% if volunteer.status == 'approved' %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Welcome to our volunteer team!</strong>
+                        <p class="mb-0 mt-2">Your application has been approved. We will contact you soon with volunteer opportunities.</p>
+                    </div>
+                    {% elif volunteer.status == 'pending' %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-clock me-2"></i>
+                        <strong>Your application is under review.</strong>
+                        <p class="mb-0 mt-2">We'll notify you once your application is processed. This usually takes 2-3 business days.</p>
+                    </div>
+                    {% elif volunteer.status == 'rejected' %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>Application Not Approved</strong>
+                        <p class="mb-0 mt-2">Unfortunately, your volunteer application was not approved at this time. Please contact us for more information.</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-user-plus fa-4x text-muted mb-3"></i>
+                        <h5>Not a Volunteer Yet</h5>
+                        <p class="text-muted">Join our volunteer team and make a difference!</p>
+                        <a href="{{ url_for('user.volunteer') }}" class="btn btn-success">
+                            <i class="fas fa-sign-in-alt me-2"></i>Apply as Volunteer
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if volunteer and volunteer.status == 'approved' %}
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-bullhorn me-2"></i>Volunteer Opportunities</h5>
+                    <p class="text-muted">Check out upcoming events you can participate in:</p>
+                    <a href="{{ url_for('main.events') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-calendar me-2"></i>Browse Events
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
