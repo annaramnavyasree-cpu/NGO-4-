@@ -1,0 +1,288 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Settings - Hope Foundation Admin{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="fas fa-cog me-2"></i>Admin Settings</h4>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <a href="#general" class="list-group-item list-group-item-action active" data-bs-toggle="pill">
+                        <i class="fas fa-home me-2"></i> General
+                    </a>
+                    <a href="#organization" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-building me-2"></i> Organization
+                    </a>
+                    <a href="#email" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-envelope me-2"></i> Email
+                    </a>
+                    <a href="#payments" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-credit-card me-2"></i> Payments
+                    </a>
+                    <a href="#security" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-shield-alt me-2"></i> Security
+                    </a>
+                    <a href="#appearance" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-paint-brush me-2"></i> Appearance
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="col-md-9">
+        <div class="tab-content">
+            <!-- General Settings -->
+            <div class="tab-pane fade show active" id="general">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">General Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.settings') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="section" value="general"/>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Site Name</label>
+                                <input type="text" name="site_name" class="form-control" value="Hope Foundation" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Site URL</label>
+                                <input type="url" name="site_url" class="form-control" value="http://localhost:5000" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Site Description</label>
+                                <textarea name="site_description" class="form-control" rows="3">A non-profit organization dedicated to helping those in need.</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Timezone</label>
+                                <select name="timezone" class="form-select">
+                                    <option value="UTC" selected>UTC</option>
+                                    <option value="Asia/Kolkata">Asia/Kolkata</option>
+                                    <option value="America/New_York">America/New York</option>
+                                    <option value="Europe/London">Europe/London</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Organization Settings -->
+            <div class="tab-pane fade" id="organization">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Organization Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.settings') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="section" value="organization"/>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Organization Name</label>
+                                <input type="text" name="org_name" class="form-control" value="Hope Foundation">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea name="address" class="form-control" rows="2">123 Charity Lane, New York, NY 10001</textarea>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone</label>
+                                    <input type="tel" name="phone" class="form-control" value="+1 234 567 8900">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Tax ID</label>
+                                    <input type="text" name="tax_id" class="form-control" value="XX-XXXXXXX">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email Settings -->
+            <div class="tab-pane fade" id="email">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Email Configuration</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.settings') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="section" value="email"/>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">SMTP Server</label>
+                                <input type="text" name="smtp_server" class="form-control" value="smtp.gmail.com">
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">SMTP Port</label>
+                                    <input type="number" name="smtp_port" class="form-control" value="587">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Encryption</label>
+                                    <select name="smtp_encryption" class="form-select">
+                                        <option value="tls" selected>TLS</option>
+                                        <option value="ssl">SSL</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">SMTP Username</label>
+                                <input type="email" name="smtp_username" class="form-control" value="noreply@hopefoundation.org">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">SMTP Password</label>
+                                <input type="password" name="smtp_password" class="form-control" placeholder="Enter SMTP password">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">From Email</label>
+                                <input type="email" name="from_email" class="form-control" value="noreply@hopefoundation.org">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Settings -->
+            <div class="tab-pane fade" id="payments">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Payment Gateway Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.settings') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="section" value="payments"/>
+                            
+                            <h6 class="text-muted mb-3">Razorpay Settings</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Razorpay Key ID</label>
+                                <input type="text" name="razorpay_key_id" class="form-control" value="rzp_test_xxxxx">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Razorpay Key Secret</label>
+                                <input type="password" name="razorpay_key_secret" class="form-control" placeholder="Enter Razorpay secret">
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" name="razorpay_enabled" class="form-check-input" id="razorpayEnabled" checked>
+                                <label class="form-check-label" for="razorpayEnabled">Enable Razorpay</label>
+                            </div>
+                            <hr>
+                            <h6 class="text-muted mb-3">Stripe Settings</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Stripe Publishable Key</label>
+                                <input type="text" name="stripe_publishable_key" class="form-control" value="pk_test_xxxxx">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Stripe Secret Key</label>
+                                <input type="password" name="stripe_secret_key" class="form-control" placeholder="Enter Stripe secret">
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" name="stripe_enabled" class="form-check-input" id="stripeEnabled">
+                                <label class="form-check-label" for="stripeEnabled">Enable Stripe</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Settings -->
+            <div class="tab-pane fade" id="security">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Security Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.settings') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="section" value="security"/>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" name="enable_2fa" class="form-check-input" id="enable2fa">
+                                <label class="form-check-label" for="enable2fa">Enable Two-Factor Authentication</label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Session Timeout (minutes)</label>
+                                <input type="number" name="session_timeout" class="form-control" value="30" min="5" max="1440">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password Minimum Length</label>
+                                <input type="number" name="min_password_length" class="form-control" value="8" min="6" max="32">
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" name="require_email_verification" class="form-check-input" id="requireEmail" checked>
+                                <label class="form-check-label" for="requireEmail">Require Email Verification</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appearance Settings -->
+            <div class="tab-pane fade" id="appearance">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Appearance Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.settings') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="section" value="appearance"/>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Primary Color</label>
+                                <div class="input-group">
+                                    <input type="color" name="primary_color" class="form-control form-control-color" value="#4f46e5">
+                                    <input type="text" class="form-control" value="#4f46e5">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Logo</label>
+                                <input type="file" name="logo" class="form-control" accept="image/*">
+                                <small class="text-muted">Recommended size: 200x60px</small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Favicon</label>
+                                <input type="file" name="favicon" class="form-control" accept="image/*">
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" name="dark_mode" class="form-check-input" id="darkMode">
+                                <label class="form-check-label" for="darkMode">Enable Dark Mode</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
