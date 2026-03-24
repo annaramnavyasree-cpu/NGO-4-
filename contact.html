@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - {{ contact.name }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header bg-primary text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="display-4">Contact Us</h1>
+                <p class="lead">We'd love to hear from you. Get in touch with us.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Contact Form -->
+            <div class="col-lg-7 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4">Send us a Message</h3>
+                        
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        
+                        <form method="POST" action="{{ url_for('main.contact') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Your Name *</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject *</label>
+                                <select class="form-select" id="subject" name="subject" required>
+                                    <option value="">Select a subject</option>
+                                    <option value="General Inquiry">General Inquiry</option>
+                                    <option value="Donation">Donation Inquiry</option>
+                                    <option value="Volunteering">Volunteering</option>
+                                    <option value="Partnership">Partnership</option>
+                                    <option value="Media">Media & Press</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message *</label>
+                                <textarea class="form-control" id="message" name="message" rows="6" placeholder="How can we help you?" required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4">Contact Information</h3>
+                        
+                        <div class="contact-info-item mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon me-3">
+                                    <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Address</h5>
+                                    <p class="text-muted mb-0">123 Hope Street, City, Country</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon me-3">
+                                    <i class="fas fa-phone fa-2x text-primary"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Phone</h5>
+                                    <p class="text-muted mb-0">{{ contact.phone|default('+1 234 567 8900') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon me-3">
+                                    <i class="fas fa-envelope fa-2x text-primary"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Email</h5>
+                                    <p class="text-muted mb-0">{{ contact.email|default('info@hopefoundation.org') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon me-3">
+                                    <i class="fas fa-clock fa-2x text-primary"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Office Hours</h5>
+                                    <p class="text-muted mb-0">Mon - Fri: 9:00 AM - 6:00 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Social Media -->
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="mb-3">Follow Us</h4>
+                        <div class="social-links">
+                            <a href="#" class="btn btn-outline-primary me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="btn btn-outline-info me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="btn btn-outline-danger me-2"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="btn btn-outline-primary"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="map-section py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.1422937950147!2d-73.98731968482413!3d40.75889497932681!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" 
+                        width="100%" 
+                        height="400" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
