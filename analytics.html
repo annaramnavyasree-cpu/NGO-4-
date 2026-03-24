@@ -1,0 +1,265 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Analytics - Hope Foundation Admin{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="fas fa-chart-line me-2"></i>Analytics Dashboard</h4>
+    <div class="btn-group">
+        <select class="form-select" style="width: auto;" onchange="changePeriod(this.value)">
+            <option value="7">Last 7 Days</option>
+            <option value="30">Last 30 Days</option>
+            <option value="90">Last 90 Days</option>
+            <option value="365" selected>Last Year</option>
+        </select>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- Key Metrics -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-gradient-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="mb-1">Total Revenue</h6>
+                        <h3 class="mb-0">${{ total_revenue }}</h3>
+                        <small class="opacity-75">{{ revenue_change }}% vs last period</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-dollar-sign fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-gradient-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="mb-1">Total Users</h6>
+                        <h3 class="mb-0">{{ total_users }}</h3>
+                        <small class="opacity-75">{{ user_change }}% vs last period</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-gradient-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="mb-1">Total Events</h6>
+                        <h3 class="mb-0">{{ total_events }}</h3>
+                        <small class="opacity-75">{{ event_change }}% vs last period</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-calendar fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-gradient-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="mb-1">Volunteers</h6>
+                        <h3 class="mb-0">{{ total_volunteers }}</h3>
+                        <small class="opacity-75">{{ volunteer_change }}% vs last period</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-hands-helping fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 1 -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">Revenue Over Time</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">Donation Sources</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="sourcesChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 2 -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">User Registrations</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="registrationsChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">Top Content by Views</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="contentChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Table -->
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h6 class="mb-0">Recent Activity</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Activity</th>
+                        <th>User</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in recent_activities %}
+                    <tr>
+                        <td>{{ activity.description }}</td>
+                        <td>{{ activity.user_name }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if activity.type == 'donation' else ('info' if activity.type == 'volunteer' else ('warning' if activity.type == 'event' else 'primary')) }}">
+                                {{ activity.type|title }}
+                            </span>
+                        </td>
+                        <td>{{ activity.created_at.strftime('%d %b %Y %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function changePeriod(days) {
+    window.location.href = '/admin/analytics?period=' + days;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Revenue ($)',
+                data: [12000, 15000, 11000, 18000, 14000, 22000, 19000, 25000, 21000, 28000, 24000, 32000],
+                borderColor: 'rgba(79, 70, 229, 1)',
+                backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Sources Chart
+    const sourcesCtx = document.getElementById('sourcesChart').getContext('2d');
+    new Chart(sourcesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['One-time', 'Recurring', 'Corporate'],
+            datasets: [{
+                data: [60, 30, 10],
+                backgroundColor: ['#36a2eb', '#4bc0c0', '#ffcd56']
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    // Registrations Chart
+    const registrationsCtx = document.getElementById('registrationsChart').getContext('2d');
+    new Chart(registrationsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'New Users',
+                data: [45, 52, 38, 65, 48, 72],
+                backgroundColor: 'rgba(75, 192, 192, 0.7)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Content Chart
+    const contentCtx = document.getElementById('contentChart').getContext('2d');
+    new Chart(contentCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Annual Report', 'Education Program', 'Health Camp', 'Clean Water', 'Food Drive'],
+            datasets: [{
+                label: 'Views',
+                data: [1250, 980, 875, 720, 650],
+                backgroundColor: 'rgba(255, 159, 64, 0.7)'
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+});
+</script>
+{% endblock %}
